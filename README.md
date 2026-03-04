@@ -52,6 +52,15 @@ Effective Modern C++
 Author  : Scott Meyers
 Edition : 1st
 Year    : 2014
+
+C++20: The Complete Guide
+
+Author: Nicolai M. Josuttis
+Year: 2022
+
+optional 
+
+A Tour of C++ (3rd ed)
 ```
 
 **Topics:**
