@@ -499,3 +499,166 @@ hello run ஆகும்போது:
   
 எல்லாம் எப்படி involve ஆகிறது
 ```
+
+---
+# 💾 Computer Memory — Bits, ASCII & Binary Storage
+
+---
+
+## 1️⃣ Computer உண்மையில் எப்படி Store செய்கிறது
+
+**Computer memory-ல் information:**
+```
+0 1 0 0 0 1 1 0 ...
+```
+
+✔ இப்படி bits ஆக தான் இருக்கும்
+
+```
+bit = 0 or 1
+
+8 bits சேர்ந்து = 1 byte
+```
+
+---
+
+## 2️⃣ Character → ASCII Number
+
+**ஒரு character-க்கு ASCII standard ஒரு number assign செய்கிறது:**
+
+| Character | ASCII number |
+|-----------|-------------|
+| `#` | 35 |
+| `i` | 105 |
+| `n` | 110 |
+| `c` | 99 |
+
+✔ இது decimal representation
+
+---
+
+## 3️⃣ அந்த Number Binary ஆக மாறும்
+
+```
+Computer decimal store செய்யாது
+அதை binary (0,1) ஆக convert செய்து store செய்யும்
+```
+
+**`#`**
+```
+ASCII decimal : 35
+Binary        : 00100011
+```
+
+**`i`**
+```
+ASCII decimal : 105
+Binary        : 01101001
+```
+
+**`n`**
+```
+ASCII decimal : 110
+Binary        : 01101110
+```
+
+**`c`**
+```
+ASCII decimal : 99
+Binary        : 01100011
+```
+
+---
+
+## 4️⃣ Memory-ல் எப்படி இருக்கும்
+
+**Example — `#include` memory-ல்:**
+
+```
+#         →  00100011
+i         →  01101001
+n         →  01101110
+c         →  01100011
+l         →  01101100
+u         →  01110101
+d         →  01100100
+e         →  01100101
+```
+
+✔ ஒவ்வொரு character = 1 byte = 8 bits
+
+---
+
+## 5️⃣ ஏன் புத்தகத்தில் 35, 105 போன்ற Numbers எழுதுகிறார்கள்?
+
+**Binary படிக்க கடினம்:**
+```
+01101001
+```
+
+**இதைக் காட்டிலும்:**
+```
+105
+```
+
+✔ எழுதுவது எளிது
+
+**அதனால்:**
+```
+Humans   → decimal
+Computer → binary
+```
+
+---
+
+## 6️⃣ முக்கிய Concept
+
+**இதுதான் புத்தகத்தில் சொல்வது:**
+
+```
+Information = Bits + Context
+```
+
+**Memory-ல்:**
+```
+01101001
+```
+
+**Context இல்லாமல் meaning தெரியாது.**
+
+**Context இருந்தால்:**
+```
+ASCII       → 'i'
+integer     → 105
+instruction → machine code
+```
+
+---
+
+## ✅ Short Answer
+
+**நீ சொன்னது சரி:**
+```
+Computer 0,1 bits ஆகத்தான் store செய்கிறது
+```
+
+**`# = 35` என்பது:**
+```
+decimal representation மட்டும்
+```
+
+**ஆனால் memory-ல்:**
+```
+35 → 00100011
+```
+
+---
+
+## 💡 Next Step
+
+```
+hello.c file memory-ல் எப்படி
+binary bytes ஆக இருக்கும் என்று
+diagram பார்த்தால்
+CS:APP Chapter 1 முழுவதும் புரியும்
+```
