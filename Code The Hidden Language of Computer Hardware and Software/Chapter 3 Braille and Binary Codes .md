@@ -495,3 +495,343 @@ Exactly like computers use:
 **Why ASCII uses 7 bits (128 codes) and why modern computers use 8 bits (256 codes).**
 
 அது இந்த **Braille chapter-இன் binary concept-லிருந்து direct வந்தது.**
+
+----
+
+உன் confusion **சரியானது** 👍. இந்த இடத்தில் இரண்டு concepts mix ஆகிறது:
+
+* **signal types (possible values per position)**
+* **positions (how many places / dots)**
+
+இந்த இரண்டையும் separate பண்ணினால் Braille logic clear ஆகிவிடும்.
+
+---
+
+# 1️⃣ முதலில் rule என்ன?
+
+Combinatorics rule:
+
+```text
+Total combinations = (possible values per position) ^ (number of positions)
+```
+
+அதாவது:
+
+```text
+values^positions
+```
+
+---
+
+# 2️⃣ Morse code case
+
+Morse code-ல் **signal types = 2**
+
+```text
+dot
+dash
+```
+
+So:
+
+```text
+values = 2
+```
+
+Now assume message length = 1 signal
+
+```text
+.
+-
+```
+
+Total:
+
+```
+2^1 = 2
+```
+
+---
+
+### 2 signals
+
+Example:
+
+```
+..
+.-
+-.
+--
+```
+
+Total:
+
+```
+2^2 = 4
+```
+
+---
+
+### 3 signals
+
+```
+...
+..-
+.-.
+.--
+-..
+-.-
+--.
+---
+```
+
+Total:
+
+```
+2^3 = 8
+```
+
+So Morse code pattern:
+
+```
+2^n
+```
+
+where
+
+```
+n = number of signals
+```
+
+---
+
+# 3️⃣ Braille case
+
+Braille-ல் **signal types = 2**
+
+```
+raised dot
+flat dot
+```
+
+இது binary போல.
+
+So:
+
+```
+values = 2
+```
+
+But Braille cell-ல் **positions = 6 dots**
+
+Structure:
+
+```
+1 4
+2 5
+3 6
+```
+
+Each dot can be:
+
+```
+raised
+flat
+```
+
+---
+
+# 4️⃣ Braille combinations calculation
+
+Dot1 → 2 possibilities
+Dot2 → 2 possibilities
+Dot3 → 2 possibilities
+Dot4 → 2 possibilities
+Dot5 → 2 possibilities
+Dot6 → 2 possibilities
+
+So:
+
+```
+2 × 2 × 2 × 2 × 2 × 2
+```
+
+Which is:
+
+```
+2^6
+```
+
+Result:
+
+```
+64 combinations
+```
+
+---
+
+# 5️⃣ Example Braille codes
+
+Example:
+
+```
+000000
+000001
+000010
+000011
+...
+111111
+```
+
+Total:
+
+```
+64 patterns
+```
+
+Each pattern → one symbol.
+
+---
+
+# 6️⃣ Why NOT `6^1`
+
+You asked:
+
+> Braille is 1 signal so 6 combination right so 6¹?
+
+இல்ல.
+
+Because Braille-ல் **6 choices இல்லை**.
+
+Each dot only:
+
+```
+2 choices
+```
+
+So:
+
+```
+choices = 2
+positions = 6
+```
+
+Therefore:
+
+```
+2^6
+```
+
+NOT:
+
+```
+6^1
+```
+
+---
+
+# 7️⃣ Compare Morse vs Braille
+
+| System  | Choices         | Positions | Formula |
+| ------- | --------------- | --------- | ------- |
+| Morse   | 2 (dot,dash)    | n signals | 2ⁿ      |
+| Braille | 2 (raised,flat) | 6 dots    | 2⁶      |
+
+---
+
+# 8️⃣ Computer binary same idea
+
+Computer bit:
+
+```
+0
+1
+```
+
+So:
+
+```
+2 values
+```
+
+8 bits:
+
+```
+positions = 8
+```
+
+So combinations:
+
+```
+2^8 = 256
+```
+
+---
+
+# 9️⃣ Big picture (author idea)
+
+Author showing same math everywhere:
+
+```
+Morse
+2 signals
+↓
+2^n patterns
+
+Braille
+6 binary dots
+↓
+2^6 patterns
+
+Computer
+8 bits
+↓
+2^8 patterns
+```
+
+Same combinatorics rule.
+
+---
+
+✅ **Simple summary**
+
+Your confusion:
+
+```
+6 dots = 6 combinations?
+```
+
+Correct logic:
+
+```
+6 positions
+each position = 2 choices
+```
+
+So:
+
+```
+2^6 = 64 combinations
+```
+
+---
+
+💡 Small insight from the book:
+
+This chapter secretly prepares you for **bytes**.
+
+```
+Braille → 6 bits → 64 patterns
+Computer → 8 bits → 256 patterns
+```
+
+இந்த connection தான் author later chapters-ல் use பண்ணுகிறார்.
+
+---
+
+நீ விரும்பினால் நான் இன்னொரு important thing explain செய்யலாம்:
+
+**Why computers finally settled on 8 bits (byte) instead of 6 like Braille.**
+
+இந்த question computer history-ல மிகவும் interesting answer கொண்டது.
+
