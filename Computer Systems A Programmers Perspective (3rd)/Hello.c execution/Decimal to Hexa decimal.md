@@ -138,7 +138,7 @@ F = 15
 | E   | 14      |
 | F   | 15      |
 
-![alt text](0f9e8b4a7dda766552cbc6b942864103cd334f90-1.png)
+![alt text](0f9e8b4a7dda766552cbc6b942864103cd334f90.png)
 
 ---
 
