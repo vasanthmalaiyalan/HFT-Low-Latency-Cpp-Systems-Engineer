@@ -202,3 +202,217 @@ hello.i (~800 lines)
 ```
 
 **Key point:** hello.i இன்னும் human-readable text — binary ஆகவில்லை. அது Step 3, 4-ல் நடக்கும்! 🎯
+
+---------
+
+நல்ல கேள்விகள்! ஒவ்வொன்னா பார்க்கலாம்.
+
+---
+
+## 1️⃣ `#include` — Pointer-ஆ? Copy-ஆ?
+
+**COPY தான்!** Pointer இல்ல.
+
+```
+hello.c-ல்:          hello.i-ல் result:
+#include <stdio.h>  →  [stdio.h-ஓட எல்லா lines-உம் literally paste]
+                       extern int printf(...);
+                       extern int scanf(...);
+                       typedef struct FILE;
+                       ... 800+ lines ...
+```
+
+Pointer-ஆ இருந்தால் compiler runtime-ல் தேட வேண்டும் — அது slow, error-prone. **Copy பண்ணிவிட்டால் compiler-க்கு எல்லாமே ஒரே file-ல் கிடைக்கும்.**
+
+---
+
+## 2️⃣ Step 2 என்றால் என்ன — உன் words சரிதானா?
+
+> "compiler-க்கு compile செய்ய ஏதுவாக arrange செய்து வைப்பது"
+
+**100% சரி!** Preprocessor = compiler-ஓட assistant. Compiler-க்கு தேவையான எல்லாவற்றையும் ஒரே இடத்தில் ready பண்ணி வைக்கும்.
+
+---
+
+## 3️⃣ `#define` — என்ன, ஏன்?
+
+உன் `.c` file-ல் நீ எழுதுவது:
+```c
+printf("Hi\n");        // இது actual value — string
+```
+
+`#define` என்பது வேற விஷயம் — **programmer-ஓட shortcut system:**
+
+```c
+#define PI 3.14159
+```
+
+இதன் அர்த்தம்: **"PI என்ற word பார்த்தால் எங்கும் 3.14159 போடு"**
+
+ஏன் பயன்படுத்துவோம்:
+```c
+// இல்லாம எழுதினால்:
+float area = 3.14159 * r * r;
+float circumference = 2 * 3.14159 * r;
+float volume = (4/3) * 3.14159 * r * r * r;
+// 3.14159 மாற்றணும்னா எல்லா இடத்திலும் மாற்றணும்!
+
+// #define பயன்படுத்தினால்:
+#define PI 3.14159
+float area = PI * r * r;          // clean!
+float circumference = 2 * PI * r;
+float volume = (4/3) * PI * r * r * r;
+// PI மாற்றினால் எல்லா இடமும் automatically!
+```
+
+**Preprocessor-க்கு meaning தெரியாது** — robot மாதிரி find & replace மட்டுமே செய்யும்.
+
+---
+
+## 4️⃣ Comments — ஏன் delete?
+
+```c
+// இது comment
+/* இதுவும் */
+```
+
+Comment என்பது **programmer-க்கு மட்டும்** — future-ல் code படிக்க உதவும் notes.
+
+```
+Programmer → Comments படிப்பார்
+CPU        → Comments புரியாது, தேவையில்லை
+Compiler   → Comments வேண்டாம் — extra work
+```
+
+So preprocessor delete செய்துவிடும். **Final binary-ல் comments-ஓட ஒரு byte கூட இருக்காது.**
+
+---
+
+## 5️⃣ `stdio.h` — என்ன இருக்கும் உள்ளே?
+
+**உன் கேள்வி:** stdio.h-ல் எழுதப்பட்டிருக்கும் function-ஆ? Rule-ஆ? Condition-ஆ?
+
+**Answer:** `stdio.h` = **Declarations மட்டுமே** — actual code இல்ல!
+
+```c
+// stdio.h-ல் இருப்பது:
+extern int printf(const char *fmt, ...);  // declaration
+extern int scanf(const char *fmt, ...);   // declaration
+extern int fopen(...);                    // declaration
+
+// அர்த்தம்: "இந்த functions exist செய்கின்றன,
+//            actual code வேற எங்கோ இருக்கு (libc.so)"
+```
+
+**Menu card மாதிரி** — menu-ல் dishes list இருக்கும், actual food kitchen-ல் இருக்கும்:
+
+```
+stdio.h    = Menu card   (என்ன available என்று list)
+libc.so    = Kitchen     (actual printf code இங்கே)
+Linker     = Waiter      (உன் order-ஐ kitchen-உடன் connect)
+```
+
+---
+
+## 6️⃣ `#ifdef` — Platform-based code
+
+**உன் கேள்வி:** இதுவும் stdio.h மாதிரி rule/condition-ஆ?
+
+**ஆமா — ஆனால் வித்தியாசம்:**
+
+```c
+#ifdef WINDOWS        // "WINDOWS என்ற flag define ஆனதா?"
+    // Windows-specific code
+#else
+    // Linux-specific code  
+#endif
+```
+
+**Real world example:**
+```c
+#ifdef WINDOWS
+    #include <windows.h>    // Windows API
+    Sleep(1000);            // Windows sleep function
+#else
+    #include <unistd.h>     // Linux API
+    sleep(1);               // Linux sleep function
+#endif
+```
+
+**ஒரே source code** — Windows-ல் compile பண்ணினால் Windows code, Linux-ல் compile பண்ணினால் Linux code. Same `.c` file!
+
+---
+
+## Overall Picture
+
+```
+#include  →  Other file-ஓட content COPY பண்ணு
+#define   →  Word-ஐ value-ஆல் REPLACE பண்ணு  
+Comments  →  DELETE பண்ணு
+#ifdef    →  Condition பார்த்து சரியான block KEEP பண்ணு
+              மற்றதை DELETE பண்ணு
+
+எல்லாமே TEXT manipulation மட்டுமே!
+Compiler் பார்க்கவே இல்ல இந்த stage-ல்.
+Preprocessor = Smart text editor! 🎯
+```
+
+---------
+
+**ஆமா! நீங்கள் சொன்னது சரிதான்!**
+
+---
+
+## `#define` — நம்ம hello.c-உடன் சம்பந்தம் இல்லை
+
+நம்ம hello.c-ல் `#define` இல்லவே இல்ல:
+
+```c
+#include <stdio.h>        // இது மட்டுமே இருக்கு
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}
+```
+
+`#define PI 3.14159` என்பது **வேற program-ல்** — circle area calculate பண்ண எழுதும் code. நம்ம hello world-க்கு தேவையே இல்ல. நீங்கள் புரிஞ்சுக்கிட்டீர்கள் ✅
+
+---
+
+## hello.i final result — சரியா இருக்கா?
+
+**ஆமா, சரிதான்!** ஆனால் இன்னும் கொஞ்சம் precise-ஆ பார்க்கலாம்:
+
+```
+hello.c (6 lines)          hello.i (~800 lines)
+─────────────────          ────────────────────────────────
+#include <stdio.h>    →    [stdio.h முழுக்க copy]
+                           typedef struct _IO_FILE FILE;
+                           extern int printf(...);
+                           extern int scanf(...);
+                           extern int fopen(...);
+                           ... 800 lines ...
+                      →    [உன் code கீழே]
+int main() {               int main() {
+    printf("Hi\n");            printf("Hi\n");
+    return 0;                  return 0;
+}                          }
+```
+
+---
+
+## Key point — உன் actual code மாறவே இல்லை!
+
+```
+printf("Hello, World!\n");   ← hello.c-ல் இருந்தது
+printf("Hello, World!\n");   ← hello.i-லயும் same!
+```
+
+Preprocessor உன் code-ஐ தொடவே இல்ல — **மேலே மட்டும் stdio.h paste பண்ணியது!**
+
+**Simple-ஆ சொன்னால்:**
+```
+hello.i = stdio.h contents + உன் hello.c code
+```
+
+அவ்வளவுதான் Step 2! 🎯
