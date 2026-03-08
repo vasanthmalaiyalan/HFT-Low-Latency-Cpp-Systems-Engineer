@@ -61,7 +61,8 @@ Disk-ல் இருப்பது: pure binary bits (magnetic/flash storage)
 நீங்கள் concept புரிந்துகொண்டீர்கள் — **"memory"** என்ற word-ஐ **"disk storage"** என்று replace பண்ணினால் நீங்கள் சொன்னது 100% correct! 🎯
 
 --
-`ok, அந்த ப்ரோக்ராம் வேகமாக வேலை செய்வதற்காகத்தான் ram பயன்படுத்துகிறோமா இது temporary?`
+
+> `ok, அந்த ப்ரோக்ராம் வேகமாக வேலை செய்வதற்காகத்தான் ram பயன்படுத்துகிறோமா இது temporary?`
 
 **ஆமா, ஆனால் அதை விட இன்னும் deeper reason இருக்கு!**
 
