@@ -1290,3 +1290,341 @@ Page Cache
 Linux OS **disk writes direct செய்யாது** — முதலில் **RAM page cache-ல் store** செய்யும்.
 
 இதுதான் modern OS I/O performance-ஓட secret.
+
+
+-----
+
+மிக நல்ல கேள்வி 👍
+நீ கேட்கிற **block device behavior** concept மிகவும் முக்கியமானது. இதை சரியாக புரிந்தால் **filesystem + buffering + OS page cache** எப்படி வேலை செய்கிறது என்பது தெளிவாகும்.
+
+முதலில் ஒரு முக்கிய clarification:
+
+```text
+buffer "4096 bytes → 1 byte" ஆக மாற்றாது
+```
+
+அது **data collect செய்வதற்காக** தான்.
+
+நாம் step-by-step பார்க்கலாம்.
+
+---
+
+# 1️⃣ Disk எப்படி data store செய்கிறது
+
+Disk ஒரு **block device**.
+
+அதாவது disk read/write smallest unit:
+
+```text
+block
+```
+
+Typical block size:
+
+```text
+4096 bytes (4 KB)
+```
+
+Disk-ல் data இப்படி இருக்கும்:
+
+```
+Block 1000
+┌────────────────────────────┐
+│ 4096 bytes                 │
+│                            │
+│ printf("hello");           │
+│ ...                        │
+└────────────────────────────┘
+```
+
+---
+
+# 2️⃣ நீ 1 byte change செய்தால்
+
+Example file:
+
+```
+printf("hello");
+```
+
+நீ `"hello"` → `"jello"` மாற்றினால்.
+
+Change:
+
+```
+h → j
+```
+
+இது:
+
+```
+1 byte change
+```
+
+ஆனால் disk write unit:
+
+```
+4096 bytes
+```
+
+---
+
+# 3️⃣ Disk actually செய்யும் operation
+
+Disk direct-ஆ 1 byte update செய்ய முடியாது.
+
+அதனால் OS செய்யும்:
+
+```
+read block (4096 bytes)
+↓
+modify memory
+↓
+write block (4096 bytes)
+```
+
+Diagram:
+
+```
+disk block
+      ↓
+read 4096 bytes
+      ↓
+RAM buffer
+      ↓
+modify 1 byte
+      ↓
+write 4096 bytes
+      ↓
+disk
+```
+
+இதைத்தான்:
+
+```
+read-modify-write
+```
+
+என்று சொல்வார்கள்.
+
+---
+
+# 4️⃣ Buffer role என்ன?
+
+Buffer என்ன செய்யும்:
+
+```
+small writes collect
+```
+
+Example:
+
+Without buffer:
+
+```
+write('p')
+write('r')
+write('i')
+write('n')
+write('t')
+```
+
+இதனால் OS பல write requests பெறும்.
+
+---
+
+# 5️⃣ Buffer இருந்தால்
+
+Buffer collect செய்கிறது:
+
+```
+buffer:
+printf("hello");
+```
+
+பிறகு:
+
+```
+single write request
+```
+
+---
+
+# 6️⃣ OS page cache (மிக முக்கியமான layer)
+
+Linux actually disk-க்கு direct எழுதாது.
+
+First:
+
+```
+RAM page cache
+```
+
+Example:
+
+```
+disk block
+↓
+copy to page cache
+↓
+modify memory
+↓
+later flush to disk
+```
+
+Diagram:
+
+```
+program
+   ↓
+write()
+   ↓
+page cache (RAM)
+┌────────────────────────────┐
+│ 4096 bytes block           │
+│ printf("hello");           │
+└────────────────────────────┘
+   ↓
+modify inside RAM
+   ↓
+later disk write
+```
+
+---
+
+# 7️⃣ Example scenario
+
+Suppose block size:
+
+```
+4096 bytes
+```
+
+Program writes:
+
+```
+write("p")
+write("r")
+write("i")
+write("n")
+write("t")
+```
+
+Page cache:
+
+```
+┌────────────────────────────┐
+│ p r i n t                  │
+│ ...                        │
+└────────────────────────────┘
+```
+
+OS wait செய்யும்:
+
+```
+buffer full
+or
+fsync()
+or
+periodic flush
+```
+
+Then:
+
+```
+write 4096 bytes to disk
+```
+
+---
+
+# 8️⃣ Why this is efficient
+
+Without buffering:
+
+```
+6 disk writes
+```
+
+With page cache:
+
+```
+1 disk write
+```
+
+---
+
+# 9️⃣ Key idea
+
+Buffer:
+
+```
+collect small writes
+```
+
+Page cache:
+
+```
+modify disk blocks in RAM
+```
+
+Disk:
+
+```
+write full block
+```
+
+---
+
+# 🔟 Important correction to your thought
+
+நீ கேட்டது:
+
+> buffer collect செய்து 4096 bytes → 1 byte change ஆகுமா?
+
+Answer:
+
+```
+இல்லை
+```
+
+Actually:
+
+```
+buffer collect writes
+page cache holds full block
+modify inside RAM
+write full block later
+```
+
+---
+
+# Final architecture
+
+Real Linux I/O pipeline:
+
+```
+program
+↓
+stdio buffer
+↓
+write()
+↓
+kernel page cache
+↓
+filesystem
+↓
+block device driver
+↓
+disk blocks (4096 bytes)
+```
+
+---
+
+💡 நீ இதை புரிந்திருந்தால் next **மிக powerful concept** explain செய்யலாம்:
+
+```
+memory page = 4096 bytes
+filesystem block = 4096 bytes
+```
+
+இந்த இரண்டு sizes same இருப்பது **OS design-ல் பெரிய reason**.
