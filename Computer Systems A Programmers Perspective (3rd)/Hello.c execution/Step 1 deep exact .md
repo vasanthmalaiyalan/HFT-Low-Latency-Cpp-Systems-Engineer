@@ -307,381 +307,498 @@ dirty → disk actual write (writeback, block layer, IO scheduler)
 
 -----
 
-இந்த pipeline-ஐ layer-by-layer deep dive பண்றோம். ஒவ்வொரு step-உம் **exactly என்ன நடக்குது** என்று explain பண்றேன்.
+நல்லது — ஒவ்வொரு part-உம் 100% accurate-ஆ explain பண்றேன்.
 
 ---
 
 # PART 1 — Keyboard → Kernel
 
-## Keyboard press ஆகும்போது என்ன நடக்குது?
+## Key Press → Scan Code
 
-Keyboard என்பது ஒரு hardware device. நீ `#` press பண்ணும்போது:
-
-**Step 1 — Scan Code:**
-Keyboard-ல் ஒரு microcontroller இருக்கு. அது key matrix scan பண்ணி ஒரு **scan code** generate பண்ணும்.
+Keyboard-ல் ஒரு microcontroller இருக்கு (Intel 8042 அல்லது modern USB HID controller). Key matrix continuously scan பண்ணும்.
 
 ```
-Shift + 3 press
-→ make code: 0x2A (Shift), 0x04 (3)
-→ release: break code (0x2A | 0x80)
+நீ '#' press பண்ற = Shift + 3
+
+Keyboard controller detect பண்ணும்:
+  Shift key down  → make code
+  3 key down      → make code
+  3 key up        → break code
+  Shift key up    → break code
 ```
 
-**Step 2 — IRQ (Interrupt Request):**
-Keyboard controller CPU-க்கு **IRQ1** signal அனுப்பும். CPU இதை receive பண்ணி current execution-ஐ pause பண்ணும்.
+**Scan Code Sets — 3 types இருக்கு:**
 
 ```
-CPU normal execution
+Set 1 (XT) — legacy
+Set 2 (AT) — keyboard hardware default ← இதுதான் keyboard அனுப்பும்
+Set 3 — rare
+
+Keyboard → Set 2 codes அனுப்பும்
+8042 controller → Set 2 → Set 1-ஆ translate பண்ணும்
+Kernel → Set 1 receive பண்ணும்
+```
+
+**Correct scan codes (Set 1):**
+```
+Left Shift press : 0x2A
+3 key press      : 0x04  ← Set 2
+                   0x02  ← Set 1 (kernel receive பண்றது இது)
+Left Shift release: 0xAA (0x2A | 0x80)
+3 key release    : 0x82  (0x02 | 0x80)
+```
+
+---
+
+## IRQ → CPU Interrupt
+
+```
+Keyboard controller → IRQ1 signal → PIC/APIC
 ↓
-IRQ1 signal வருது
+CPU current instruction finish பண்ணும்
 ↓
-CPU: "interrupt! save current state"
+CPU EFLAGS register-ல் interrupt flag check
 ↓
-registers → stack-ல் push
+IF=1 (interrupts enabled) → accept
 ↓
-IDT (Interrupt Descriptor Table) lookup
+Current register state → kernel stack-ல் push:
+  RIP (instruction pointer)
+  CS (code segment)
+  RFLAGS
+  RSP (stack pointer)
+  SS (stack segment)
 ↓
-keyboard interrupt handler address கண்டுபிடி
+IDT[1] lookup → keyboard handler address
 ↓
 handler-க்கு jump
 ```
 
-**IDT என்னன்னா?**
-ஒரு table — interrupt number → handler function address. IRQ1 → `atkbd_interrupt()` function.
-
-**Step 3 — Kernel Keyboard Driver:**
-
-```c
-// kernel/drivers/input/keyboard/atkbd.c
-atkbd_interrupt()
-↓
-scan code படி
-↓
-input_event(dev, EV_KEY, KEY_3, 1)  // key press
-input_event(dev, EV_KEY, KEY_LEFTSHIFT, 1)
+**IDT (Interrupt Descriptor Table):**
 ```
-
-**Step 4 — Input Subsystem:**
-Linux input subsystem scan code → keycode-ஆ convert பண்ணும்.
-
-```
-scan code 0x04 → KEY_3 (keycode 11)
-```
-
-**Step 5 — Keyboard Layout Mapping:**
-`KEY_3` + `SHIFT` → character `#` → UTF-8 encoding → `0x23`
-
-```
-TTY buffer-ல் write:
-address 0xffff2000 : 0x23
+256 entries — ஒவ்வொரு entry-உம் ஒரு handler address
+IRQ1 → vector 33 (0x21) → atkbd_interrupt() address
 ```
 
 ---
 
-# PART 2 — Kernel TTY → User Space (read path)
-
-## Editor எப்படி character-ஐ பெறுகிறது?
-
-Editor (vim/vscode) already running. அது `read()` syscall-ல் **block** ஆகி காத்திருக்கும்.
+## Kernel Driver → Input Subsystem
 
 ```c
-// editor process
-read(STDIN_FILENO, buf, 1);
-// இங்கே process sleep ஆகி இருக்கு — data வரும் வரை
+// drivers/input/keyboard/atkbd.c
+atkbd_interrupt(struct serio *serio, unsigned char data, unsigned int flags)
+{
+    // data = scan code (0x02 for '3')
+    // Shift state track பண்ணும்
+    // input_event() call பண்ணும்
+}
 ```
 
-**Syscall என்னன்னா?**
-User space process kernel-ஐ directly call பண்ண முடியாது — memory protection இருக்கு. `syscall` instruction மட்டும் kernel-க்கு safe entry point.
+```
+atkbd_interrupt()
+↓
+input_event(dev, EV_MSC, MSC_SCAN, scancode)  // raw scan code log
+input_event(dev, EV_KEY, KEY_LEFTSHIFT, 1)     // shift pressed
+input_event(dev, EV_KEY, KEY_3, 1)             // 3 pressed
+input_sync(dev)                                 // event complete
+```
+
+---
+
+## Keycode → Character
 
 ```
-read() call
+Input subsystem → evdev layer → TTY layer
 ↓
-glibc wrapper
+TTY line discipline (n_tty)
 ↓
-syscall instruction (x86: int 0x80 or syscall opcode)
+Keyboard layout map (keymaps)
+KEY_3 + SHIFT → '#'
 ↓
-CPU: user mode → kernel mode switch
+UTF-8 encode → 0x23
 ↓
-sys_read() kernel function
+n_tty buffer-ல் store
+```
+
+**TTY buffer:**
+```
+n_tty internal ring buffer
+address: kernel virtual address (KASLR randomized — fixed address கொடுக்க முடியாது)
+content: [0x23]
+```
+
+---
+
+# PART 2 — read() Syscall — Exact Path
+
+## Modern x86-64 Syscall Mechanism
+
+```
+❌ int 0x80 — 32-bit legacy ONLY, modern 64-bit use பண்றதில்லை
+✅ syscall instruction — 64-bit standard
+```
+
+```
+Editor process:
+read(0, buf, 1)
+↓
+glibc:
+  mov rax, 0      ← syscall number for read
+  mov rdi, 0      ← fd (stdin)
+  mov rsi, buf    ← user buffer address
+  mov rdx, 1      ← count
+  syscall         ← kernel mode switch
+↓
+CPU:
+  CS, SS → kernel segments
+  RSP → kernel stack (per-CPU)
+  RIP → entry_SYSCALL_64() [arch/x86/entry/entry_64.S]
+↓
+entry_SYSCALL_64()
+↓
+sys_call_table[0] → __x64_sys_read()
+↓
+ksys_read()
+↓
+vfs_read()
 ↓
 tty_read()
 ↓
-TTY buffer check: data இருக்கா?
+n_tty_read()
 ↓
-YES — 0x23 இருக்கு
+data available check:
+  n_tty buffer-ல் 0x23 இருக்கு
 ↓
-copy_to_user(buf, kernel_buf, 1)
-↓
-CPU: kernel mode → user mode switch
-↓
-editor-ன் buf[0] = 0x23 ('#')
+copy_to_user(buf, &tty_buf[0], 1)
 ```
 
-**copy_to_user() ஏன் தேவை?**
-Kernel memory → user memory directly copy பண்ண முடியாது. Page table permissions different. `copy_to_user()` ஒரு safe bridge — destination address valid-ஆ இருக்கா என்று check பண்ணும், fault handle பண்ணும்.
+**copy_to_user() — exact work:**
+```
+1. buf address valid-ஆ இருக்கா? (access_ok() check)
+2. Page fault handler setup
+3. CPU: kernel page tables → user page accessible பண்ணும்
+4. memcpy equivalent
+5. Return: bytes copied
+```
+
+```
+↓
+return to entry_SYSCALL_64()
+↓
+sysret instruction
+↓
+CPU: kernel mode → user mode
+↓
+editor: buf[0] = 0x23 = '#'
+```
 
 ---
 
-# PART 3 — Editor Buffer + Screen Display
-
-## Screen-ல் எப்படி `#` தெரியுது?
+# PART 3 — Screen Display — Full Path
 
 ```
 editor: buf[0] = '#' received
 ↓
-editor internal buffer update (e.g., vim's gap buffer)
+editor internal buffer update
+(vim: gap buffer / vscode: piece tree)
 ↓
 cursor position update
 ↓
-screen redraw trigger
+write(STDOUT_FILENO, "#", 1)
 ↓
-write(STDOUT_FILENO, "#", 1)  // terminal-க்கு write
+sys_write() → tty_write()
 ↓
-sys_write()
+terminal emulator receive (e.g., GNOME Terminal / Windows Terminal)
 ↓
-tty driver
+VTE / ConPTY parse escape sequences
 ↓
-terminal emulator (e.g., Windows Terminal, GNOME Terminal)
+Pango / Cairo — font selection
 ↓
-terminal: character render பண்ண GPU command அனுப்பும்
+FreeType — glyph rasterization
+  '#' → font file lookup → bezier curves → pixel bitmap
 ↓
-GPU: font glyph lookup → pixels draw
+OpenGL / Vulkan / Cairo draw call
 ↓
-Screen: '#' தெரியும்
+GPU driver (Mesa / proprietary)
+↓
+GPU: pixels render → framebuffer
+↓
+Display controller → monitor
+↓
+Screen: '#' visible
 ```
-
-**முக்கியமான point:**
-`read()` → data பெறுவதற்கு.
-`write()` → display பண்றதற்கு.
-இரண்டும் separate syscalls — separate paths.
 
 ---
 
-# PART 4, 5 — File Save: write() Syscall Deep Dive
-
-## `:w` press பண்ணும்போது என்ன நடக்குது?
+# PART 4, 5 — write() Syscall — Save Path
 
 ```c
 write(fd, buffer, size);
-// fd = 3 (file descriptor, open file-க்கான handle)
-// buffer = 0x7ffe9100 (user space address)
-// size = 1
+// fd     = 3
+// buffer = user space virtual address (e.g., 0x7ffe9100)
+// size   = 1
 ```
 
-**fd என்னன்னா?**
-Integer மட்டும் — kernel-ல் ஒரு table-ல் index. fd=3 → kernel-ல் `struct file` pointer → இந்த file யாரு, offset என்ன, permissions என்ன எல்லாம் இருக்கு.
-
+**fd → kernel object chain:**
 ```
-fd table (per process):
-fd 0 → stdin
-fd 1 → stdout
-fd 2 → stderr
-fd 3 → your_file.txt   ← இது
+process → struct task_struct
+        → struct files_struct
+        → fd_array[3]
+        → struct file *
+        → struct file {
+            f_pos,        // current offset
+            f_inode,      // inode pointer
+            f_op,         // file operations (ext4_file_operations)
+          }
 ```
 
-**Syscall entry:**
+**Syscall:**
 ```
 write(3, 0x7ffe9100, 1)
 ↓
 syscall instruction
 ↓
-kernel mode
+__x64_sys_write()
 ↓
-sys_write()
+ksys_write()
+↓
+vfs_write()
 ↓
 copy_from_user(kernel_buf, 0x7ffe9100, 1)
-↓
-kernel_buf = 0x23  ✅
+  → address valid check
+  → page accessible check
+  → kernel_buf = 0x23 ✅
 ```
-
-**copy_from_user() ஏன்?**
-User address `0x7ffe9100` valid-ஆ இருக்கா, accessible-ஆ இருக்கா என்று check பண்ணும். Bad address-ஐ kernel-ல் directly dereference பண்ணா kernel crash.
 
 ---
 
-# PART 6 — VFS Layer
-
-## VFS என்றால் என்ன?
-
-Virtual File System — Linux-ல் ஒரு abstraction layer.
+# PART 6 — VFS Layer — Exact
 
 ```
-ext4? xfs? btrfs? tmpfs?
-↓
-எல்லாத்துக்கும் same interface
-↓
-vfs_write()
-```
-
-```
-sys_write()
-↓
 vfs_write()
 ↓
-fd → struct file (kernel object)
+file_operations check:
+  ext4_file_operations.write_iter = ext4_file_write_iter
 ↓
-struct file → struct inode
+__vfs_write()
 ↓
-inode → filesystem type கண்டுபிடி
-↓
-ext4 → ext4_file_write_iter() call
+ext4_file_write_iter()
 ```
 
-**inode என்னன்னா?**
-File-ஓட metadata store பண்ற kernel structure:
-
-```c
-struct inode {
-    umode_t     i_mode;      // permissions
-    uid_t       i_uid;       // owner
-    loff_t      i_size;      // file size
-    struct timespec i_mtime; // modified time
-    // disk block locations
-    // ...
-};
+**VFS abstraction:**
 ```
-
-inode-ல் file name இல்லை — directory-ல் இருக்கு. inode-ல் data இல்லை — disk blocks-ல் இருக்கு.
+同じ vfs_write() call →
+  ext4  → ext4_file_write_iter()
+  xfs   → xfs_file_write_iter()
+  tmpfs → shmem_write_iter()
+  btrfs → btrfs_file_write_iter()
+```
 
 ---
 
-# PART 7 — ext4_file_write_iter() — Core Write
+# PART 7 — ext4_file_write_iter() — 100% Accurate
 
-## Data எங்கே போகுது?
+## New file vs Existing file — important distinction:
+
+```
+Case 1: Brand new file (first write ever)
+→ page cache-ல் page இல்லை
+→ disk-ல் data இல்லை
+→ new page allocate பண்ணும் (zero-filled)
+→ disk read தேவையில்லை ✅
+
+Case 2: Existing file, partial write
+→ page cache miss → disk-ல் இருந்து page read
+→ modify
+→ write back
+→ இதுதான் read-modify-write
+```
 
 ```
 ext4_file_write_iter()
 ↓
-file offset கண்டுபிடி (f_pos = 0, first write)
+inode lock (inode_lock)
 ↓
-Page Cache lookup:
-  "இந்த file-ஓட page memory-ல் இருக்கா?"
+file offset: f_pos = 0
 ↓
-இல்லன்னா: disk-ல் இருந்து page read (read-modify-write)
-இருக்கு: directly use
+generic_perform_write()
 ↓
-inode → block mapping check:
-  "disk-ல் block allocate ஆச்சா?"
+page cache lookup:
+  find_or_create_page(inode->i_mapping, page_index)
 ↓
-இல்லன்னா: ext4 new block allocate பண்ணும்
+new file → zero page allocate
 ↓
-data → page cache-ல் copy
+iov_iter_copy_from_user_atomic()
+  → data copy: page[0] = 0x23
 ↓
-page → mark as "dirty"
+set_page_dirty(page)
+  → page->flags |= PG_dirty
+  → inode → dirty inode list-ல் add
 ↓
-inode (RAM-ல்) update: size, mtime
-```
-
-**Page Cache என்னன்னா?**
-RAM-ல் ஒரு cache — disk files-ஓட contents இங்கே இருக்கும். Read/Write எல்லாம் முதல்ல இங்கே நடக்கும், disk-க்கு பிறகு போகும்.
-
-```
-Page Cache (RAM)
-page[0] of your_file.txt:
-offset 0: 0x23  ← '#' இங்கே இருக்கு
+inode update (RAM only):
+  i_size = 1
+  i_mtime = current_time()
+  i_ctime = current_time()
+↓
+inode_unlock()
 ```
 
 ---
 
-# PART 8 — RAM State After Write
+# PART 8 — RAM State — Exact
 
 ```
 Page Cache:
-[page 0] = 0x23  dirty=1
+  struct page {
+    flags: PG_dirty = 1, PG_uptodate = 1
+    mapping: → inode->i_mapping
+    index: 0 (first page)
+    data: [0x23, 0x00, 0x00, ...]  // 4KB page, rest zeros
+  }
 
-inode (RAM):
-  i_size = 1
-  i_mtime = now
-  dirty = 1
-```
+inode (RAM — struct inode):
+  i_size  = 1
+  i_mtime = <current timestamp>
+  i_ctime = <current timestamp>
+  i_state = I_DIRTY_SYNC | I_DIRTY_DATASYNC
 
-**dirty flag என்னன்னா?**
-"இந்த data disk-ல் இல்லை, RAM-ல் மட்டும் இருக்கு, later disk-க்கு write பண்ணணும்" என்று kernel-க்கு signal.
-
-**இந்த நிலையில்:**
-```
-✅ RAM-ல் data இருக்கு
-❌ Disk-ல் இன்னும் போகல
-⚠️ Power cut ஆனா data போச்சு
-```
-
----
-
-# PART 9 — write() Return
-
-```c
-return 1;  // 1 byte successfully written (to RAM)
-```
-
-Editor-க்கு தெரியும்: write successful. ஆனால் disk guarantee இல்லை. அதனால்தான் `fsync()` என்ற syscall இருக்கு:
-
-```c
-fsync(fd);  // "disk-க்கு போகும் வரை wait பண்ணு"
+Dirty tracking:
+  Page: PG_dirty flag set
+  Inode: dirty list-ல் இருக்கு
+  Superblock: dirty inodes list
 ```
 
 ---
 
-# Full Pipeline — One View
+# PART 9 — Return Value — Exact
+
+```c
+write() → return 1
+```
+
+**Meaning:**
+```
+"1 byte page cache-ல் எழுதப்பட்டது"
+Disk guarantee: இல்லை
+```
+
+**Disk guarantee வேணும்னா:**
+```c
+// Option 1:
+fsync(fd);
+// page cache → disk flush, inode metadata flush
+// return: disk write confirm ஆனா மட்டும்
+
+// Option 2:
+fdatasync(fd);
+// data flush மட்டும், metadata (mtime) flush இல்லை
+// fsync-ஐ விட faster
+
+// Option 3: open பண்ணும்போதே
+open("file", O_WRONLY | O_SYNC);
+// every write() → automatic disk sync
+// performance cost அதிகம்
+
+// Real usage:
+// PostgreSQL, SQLite → fsync() mandatory
+// அதனால்தான் crash-safe
+```
+
+---
+
+# FULL 100% ACCURATE PIPELINE
 
 ```
-⌨️  Key Press
+⌨️  Shift+3 press
     ↓
-🔌  IRQ1 → CPU interrupt
+🔌  Keyboard controller → Set 2 scan codes
+    8042 → Set 1 translate
+    IRQ1 → APIC → CPU
     ↓
-🖥️  Kernel: atkbd_interrupt()
+💾  CPU: registers save → kernel stack
+    IDT[33] → atkbd_interrupt()
     ↓
-📥  Input subsystem → KEY_3 + SHIFT
+🖥️  atkbd_interrupt()
+    → input_event(EV_KEY, KEY_3, 1)
     ↓
-🔤  Layout map → '#' → 0x23
+📥  Input subsystem → evdev → TTY
+    n_tty line discipline
+    KEY_3 + SHIFT → '#' → UTF-8 0x23
+    n_tty ring buffer: [0x23]
     ↓
-📦  TTY buffer: [0xffff2000] = 0x23
+📖  editor: read(0, buf, 1)
+    syscall instruction (NOT int 0x80)
+    entry_SYSCALL_64()
+    sys_read() → tty_read() → n_tty_read()
+    copy_to_user() → buf[0] = 0x23
+    sysret → user mode
     ↓
-📖  read() syscall → copy_to_user()
+✏️  editor buffer: '#' added
     ↓
-✏️  Editor buffer: buf[0] = '#'
-    ↓
-🖥️  write() → terminal → GPU → Screen shows '#'
+🖥️  write(1, "#", 1)
+    tty_write → terminal emulator
+    Pango/FreeType → glyph rasterize
+    OpenGL/Vulkan → GPU
+    framebuffer → display
+    Screen: '#'
 
-──────────── SAVE ────────────
+──────── SAVE (:w) ────────
 
-💾  :w → write(fd, buf, 1)
+💾  write(3, buf, 1)
+    syscall → __x64_sys_write()
+    vfs_write()
+    copy_from_user() → kernel_buf = 0x23
     ↓
-⚙️  syscall → sys_write()
+🗂️  fd[3] → struct file → f_op → ext4
+    ext4_file_write_iter()
     ↓
-📋  copy_from_user() → kernel_buf = 0x23
+📄  page cache:
+    new file → zero page allocate (no disk read)
+    page[0] = 0x23
+    PG_dirty = 1
     ↓
-🗂️  VFS: fd → struct file → inode
-    ↓
-📁  ext4_file_write_iter()
-    ↓
-🧠  Page Cache (RAM): [0] = 0x23, dirty=1
-    ↓
-📊  inode (RAM): size=1, mtime=now
+📊  inode (RAM):
+    i_size=1, i_mtime=now
+    I_DIRTY_SYNC flag set
     ↓
 ✅  return 1
 
-❌  Disk: இன்னும் போகல → Next: writeback
+Status:
+  RAM: ✅ data இருக்கு
+  Disk: ❌ இன்னும் போகல
+  Power cut: ⚠️ data lost
+
+fsync(fd) → disk guarantee
 ```
 
 ---
 
-## Next Stage — Dirty → Disk:
+# Next: Dirty → Disk (Writeback Path)
 
 ```
-dirty page
+pdflush / wb_workfn thread
 ↓
-pdflush / writeback thread
+dirty ratio threshold check
+(default: 20% RAM dirty ஆனா flush)
+↓
+writeback_single_inode()
 ↓
 block layer
 ↓
-IO scheduler (CFQ / deadline / mq-deadline)
+bio (Block I/O) structure
 ↓
-device driver
+IO scheduler (mq-deadline / none)
+↓
+NVMe / SATA driver
 ↓
 disk controller
 ↓
-actual disk write
+actual write
 ↓
-dirty flag clear
+completion interrupt
+↓
+PG_dirty clear
+↓
+I_DIRTY clear
 ```
 
-இது தான் **real storage deep dive** — போவோமா?
+போவோமா?
