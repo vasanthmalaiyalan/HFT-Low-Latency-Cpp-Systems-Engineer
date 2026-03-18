@@ -388,3 +388,32 @@ Files → I/O
 * Virtual memory page table real model
 
 எதை deep dive பண்ணலாம்? 😎
+--------
+
+# 1.7 The Operating System Manages the Hardware
+
+## Two primary purposes (book exactly சொல்றது)
+
+1. Hardware-ஐ runaway applications-லிருந்து **protect** பண்றது
+2. Applications-க்கு complicated hardware-ஐ **simple + uniform mechanisms** வழியா access பண்ண வழி கொடுக்குது
+
+## Layered view## Three fundamental abstractions (Figure 1.11)
+
+![alt text](image-7.png)
+Book exactly சொல்றது:
+
+**Files** → I/O devices-ரோட abstraction
+
+**Virtual memory** → main memory + disk I/O devices இரண்டினதும் abstraction
+
+**Processes** → processor + main memory + I/O devices எல்லாத்தினதும் abstraction
+
+## hello program-ல OS-ரோட role
+
+Book சொல்றது: shell-உம் hello program-உம் keyboard, display, disk, main memory-ஐ **directly access பண்ணல** — எல்லாமே OS-ரோட services வழியா நடந்தது.
+
+OS = application programs-க்கும் hardware-க்கும் நடுவே இருக்கற **layer of software**.
+
+---
+
+அடுத்து 1.7.1 (Processes) போகலாமா?
