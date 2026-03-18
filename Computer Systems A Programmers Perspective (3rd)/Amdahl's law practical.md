@@ -153,3 +153,140 @@ Even big improvements in one part
 👉 “Cache optimizationல எப்படி use பண்ணுறாங்க”
 
 எதை போகலாம்? 😎
+--------
+
+சரி 🔥 இதுதான் Amdahl’s Law reverse problem — **target speedup கொடுத்து k கண்டுபிடிக்கணும்**
+
+நாம cleanஆ step-by-step போகலாம் 👇
+
+---
+
+# 🧠 Given
+
+* Target speedup:
+
+```text
+S = 4
+```
+
+* Improved fraction:
+
+```text
+α = 0.9
+```
+
+* Find:
+
+```text
+k = ?
+```
+
+---
+
+# 📐 Formula (Amdahl’s Law)
+
+S = \frac{1}{(1-\alpha) + \frac{\alpha}{k}}
+
+---
+
+# 🔍 Step 1 — Substitute values
+
+```text
+4 = 1 / ( (1 - 0.9) + 0.9/k )
+```
+
+---
+
+# 🔍 Step 2 — Simplify
+
+```text
+4 = 1 / (0.1 + 0.9/k)
+```
+
+---
+
+# 🔍 Step 3 — Invert
+
+```text
+0.1 + 0.9/k = 1/4 = 0.25
+```
+
+---
+
+# 🔍 Step 4 — Solve
+
+```text
+0.9/k = 0.25 - 0.1
+      = 0.15
+```
+
+---
+
+```text
+k = 0.9 / 0.15 = 6
+```
+
+---
+
+# 💥 Final Answer
+
+```text
+k = 6×
+```
+
+---
+
+# 🚨 Deep insight (VERY IMPORTANT)
+
+👉 90% improve பண்ணுறோம்
+👉 Target = 4×
+
+👉 ஆனா:
+
+```text
+That part must be 6× faster 😱
+```
+
+---
+
+# 💣 Why this happens?
+
+👉 remaining 10%:
+
+```text
+0.1 → bottleneck
+```
+
+👉 even if improved part super fast:
+
+```text
+limit = 1 / (1 - 0.9)
+      = 1 / 0.1
+      = 10× (max possible)
+```
+
+---
+
+# 🔥 Key lesson
+
+```text
+High overall speedup வேண்டும் என்றால்:
+→ large fraction + large k இரண்டும் வேண்டும்
+```
+
+---
+
+# 🧠 Final takeaway
+
+```text
+You can't cheat Amdahl’s Law 😄
+```
+
+---
+
+👉 இன்னும் practice வேண்டுமா?
+
+* நான் similar tricky problems குடுக்கலாம்
+* அல்லது real-world coding example connect பண்ணலாம்
+
+எதை போகலாம்? 😎
