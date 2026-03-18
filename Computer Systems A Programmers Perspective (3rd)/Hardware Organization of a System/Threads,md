@@ -1,0 +1,54 @@
+# 1.7.2 Threads
+
+## Core idea
+
+Normally process = single control flow. ஆனா modern systems-ல ஒரு process **multiple execution units** — threads — contain பண்ணலாம்.
+
+```
+Process (single thread):        Process (multi thread):
+
+[code][data][stack]             [code][data]  ← shared
+      ↓                         [stack1][stack2][stack3]
+  one flow                       ↑       ↑       ↑
+                               thread1 thread2 thread3
+                               (each has own execution flow)
+```
+
+---
+
+## Thread என்னது
+
+**Thread** = process-ரோட context-ல run ஆகுற execution unit. Same process-ல இருக்கற threads:
+- Same **code** share பண்றது
+- Same **global data** share பண்றது
+- Own **execution context** வச்சிருக்கும் (own PC, register values)
+
+---
+
+## ஏன் threads important — book சொல்ற 3 reasons
+
+**1. Network servers-ல concurrency தேவை**
+Multiple clients simultaneously handle பண்ண threads தேவை.
+
+**2. Threads-க்கிடையே data share பண்றது easier**
+Multiple processes-க்கிடையே share பண்றதை விட, same process-ல இருக்கற threads directly shared memory access பண்ணலாம்.
+
+**3. Threads typically more efficient than processes**
+New process create பண்றதை விட new thread create பண்றது lighter — less overhead.
+
+**Bonus:** Multiple processors available-ஆ இருந்தா multi-threading programs faster-ஆ run ஆகும் (Section 1.9.2-ல cover ஆகும்).
+
+---
+
+## Figure 1.13 — Process Virtual Address Space
+
+Book இந்த section-ல virtual address space diagram காட்டுது — இது 1.7.3-க்கு bridge:
+
+![alt text](image-9.png)
+---
+
+## Book-ரோட note
+
+Chapter 12-ல concurrency basic concepts + threaded programs எழுதுவது எப்படி னு learn ஆகும்.
+
+அடுத்து 1.7.3 (Virtual Memory) போகலாமா?
