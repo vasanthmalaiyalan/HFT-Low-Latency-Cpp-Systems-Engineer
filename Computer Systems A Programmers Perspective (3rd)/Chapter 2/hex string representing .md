@@ -40,7 +40,7 @@ Digit '7' → 0x37
 Digit '8' → 0x38
 Digit '9' → 0x39
 ```
-
+![alt text](ASCII_Table_Graphic_Large.png)
 Pattern: digit `x` → ASCII `0x3x`. Neat!
 
 **Null terminator:**
@@ -348,5 +348,280 @@ String = array of bytes (characters)
 * char vs int difference memoryல
 * why string length தெரியாது (strlen எப்படி work)
 * buffer overflow 😈
+
+சொல்லு 😎
+-------
+
+சரி 🔥 இப்போ நீ கேட்டது ரொம்ப core doubt:
+👉 **"ஏன் '1' → 49 → 0x31 ஆகிறது?"**
+நாம இதை அடிப்படையிலிருந்து புரியலாம். எந்த step-யும் skip பண்ண மாட்டேன்.
+
+---
+
+# 🧠 🔥 1. Computer characters புரியுமா?
+
+👉 computerக்கு:
+
+```text
+'A', '1', 'B' → புரியாது ❌
+```
+
+👉 அது புரியும்:
+
+```text
+0s and 1s மட்டும்
+```
+
+---
+
+# 💥 2. அதனால் என்ன பண்ணணும்?
+
+👉 ஒரு mapping தேவை:
+
+```text
+character → number
+```
+
+👉 அதுதான்:
+
+```text
+ASCII table ✅
+```
+
+---
+
+# 🧠 🔥 3. ASCII என்ன?
+
+👉 ஒரு fixed table:
+
+```text
+Character → Decimal number → Binary → Hex
+```
+
+---
+
+# ⚡ Example (real mapping)
+
+| Character | Decimal | Binary   | Hex  |
+| --------- | ------- | -------- | ---- |
+| '1'       | 49      | 00110001 | 0x31 |
+| '2'       | 50      | 00110010 | 0x32 |
+| '3'       | 51      | 00110011 | 0x33 |
+| '4'       | 52      | 00110100 | 0x34 |
+| '5'       | 53      | 00110101 | 0x35 |
+
+---
+
+# 🔥 4. ஏன் '1' = 49?
+
+👉 இது **rule இல்லை**
+👉 இது:
+
+```text
+standard decision (ASCII standard)
+```
+
+---
+
+👉 like:
+
+```text
+'A' = 65
+'a' = 97
+'0' = 48
+```
+
+---
+
+👉 அதனால்:
+
+```text
+'1' = 49
+```
+
+---
+
+# ⚙️ 5. எப்படி 0x31 வந்தது?
+
+👉 decimal → hex convert:
+
+```text
+49 ÷ 16 = 3 remainder 1
+```
+
+👉 so:
+
+```text
+49 = 0x31
+```
+
+---
+
+# 🔥 6. எப்படி binary வந்தது?
+
+👉 49 → binary:
+
+```text
+00110001
+```
+
+---
+
+# 💣 7. KEY PATTERN (IMPORTANT 🔥)
+
+👉 digits எல்லாம்:
+
+```text
+'0' → 0x30
+'1' → 0x31
+'2' → 0x32
+...
+'9' → 0x39
+```
+
+---
+
+👉 observe:
+
+```text
+0x3 + digit
+```
+
+---
+
+# 🧠 8. WHY THIS PATTERN?
+
+👉 binary:
+
+```text
+0011 xxxx
+```
+
+👉 first 4 bits same:
+
+```text
+0011 = 'digit group'
+```
+
+👉 last 4 bits:
+
+```text
+digit value
+```
+
+---
+
+# ⚡ Example
+
+```text
+'5' → 0x35
+
+3 → 0011
+5 → 0101
+
+= 00110101
+```
+
+---
+
+# 🔥 9. FINAL MEMORY
+
+```c
+"12345"
+```
+
+---
+
+👉 computer sees:
+
+```text
+'1' → 0x31
+'2' → 0x32
+'3' → 0x33
+'4' → 0x34
+'5' → 0x35
+'\0' → 0x00
+```
+
+---
+
+👉 memory:
+
+```text
+31 32 33 34 35 00
+```
+
+---
+
+# 💥 10. SUPER IMPORTANT DIFFERENCE
+
+👉 compare:
+
+| Thing | Meaning   |
+| ----- | --------- |
+| 1     | number    |
+| '1'   | character |
+
+---
+
+👉 values:
+
+```text
+1   → 0x01
+'1' → 0x31 ❗
+```
+
+---
+
+# 🧠 FINAL ANALOGY
+
+👉 imagine:
+
+```text
+Phone contact:
+"Vasanth" → name
++91xxxxx → number
+```
+
+---
+
+👉 same மாதிரி:
+
+```text
+'1' → symbol
+1   → numeric value
+```
+
+---
+
+# 🔥 FINAL SUMMARY
+
+```text
+ASCII = character → number mapping
+```
+
+---
+
+# 💣 FINAL ONE-LINE
+
+```text
+"'1' → 49 → 0x31 என்பது rule இல்லை — அது standard mapping (ASCII)"
+```
+
+---
+
+🔥 இப்போ clarity வந்திருக்கணும்:
+
+👉 computerக்கு character தெரியாது
+👉 ASCII தான் bridge
+👉 hex என்பது display மட்டும்
+
+---
+
+👉 next (🔥 dangerous clarity):
+
+* why 'A' = 65?
+* Unicode vs ASCII
+* memory exploit via strings 😈
 
 சொல்லு 😎
