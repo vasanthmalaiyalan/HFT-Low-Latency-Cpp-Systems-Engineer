@@ -149,3 +149,329 @@ c3        → ret
 ஒவ்வொரு byte sequence-உம் என்ன instruction என்று புரியும். இப்போ bytes மட்டும் தெரியுது — Chapter 3-ல meaning தெரியும்.
 
 அடுத்து 2.1.6 (Introduction to Boolean Algebra) போகலாமா?
+
+------------
+
+சூப்பர் 🔥 இப்போ இரண்டு topics —
+👉 **Practice 2.7 (string bytes)**
+👉 **Representing Code (machine code)**
+இரண்டையும் **book flow + deep clarity**-ல explain பண்ணுறேன் 👇
+
+---
+
+# 🔥 ✅ Practice Problem 2.7
+
+## GIVEN
+
+```c
+const char *m = "mnopqr";
+show_bytes((byte_pointer)m, strlen(m));
+```
+
+---
+
+# 🧠 STEP 1 — strlen(m)
+
+```text
+"mnopqr" → 6 characters
+```
+
+👉 so:
+
+```text
+len = 6
+```
+
+👉 NOTE:
+
+```text
+'\0' (null) include ஆகாது ❗
+```
+
+---
+
+# ⚙️ STEP 2 — characters break
+
+```text
+m n o p q r
+```
+
+---
+
+# 🔥 STEP 3 — ASCII values
+
+👉 hint already given:
+
+```text
+'a' = 0x61 → so letters increase by 1
+```
+
+---
+
+| Character | Hex  |
+| --------- | ---- |
+| m         | 0x6D |
+| n         | 0x6E |
+| o         | 0x6F |
+| p         | 0x70 |
+| q         | 0x71 |
+| r         | 0x72 |
+
+---
+
+# 💥 STEP 4 — show_bytes output
+
+```text
+6d 6e 6f 70 71 72
+```
+
+👉 (space இல்லாம printனா:)
+
+```text
+6d6e6f707172
+```
+
+---
+
+# 🔥 FINAL ANSWER (2.7)
+
+```text
+6d 6e 6f 70 71 72
+```
+
+---
+
+# 💣 CORE INSIGHT
+
+```text
+String → each char = 1 byte → ASCII mapping
+```
+
+---
+
+# ⚡ முக்கிய note
+
+👉 null terminator print ஆகல:
+
+```text
+strlen() → length மட்டும் (6)
+```
+
+👉 so:
+
+```text
+'\0' skip ஆகுது
+```
+
+---
+
+---
+
+# 🔥 ✅ 2.1.5 Representing Code
+
+இது ரொம்ப important concept 🔥
+
+---
+
+# 🧠 🔥 ONE LINE
+
+```text
+Program = bytes sequence தான்
+```
+
+---
+
+# ⚙️ Example C code
+
+```c
+int sum(int x, int y) {
+    return x + y;
+}
+```
+
+---
+
+👉 நீ பார்க்குறது:
+
+```text
+C code (human readable)
+```
+
+---
+
+👉 compiler convert பண்ணும்:
+
+```text
+machine code (bytes)
+```
+
+---
+
+# 💥 Example outputs
+
+```text
+Linux32:
+5589e58b450c034508c9c3
+
+Linux64:
+554889e5897dfc8975f80345fcc9c3
+```
+
+---
+
+# 🧠 என்ன meaning?
+
+👉 இது:
+
+```text
+CPU execute பண்ணும் instructions (byte form)
+```
+
+---
+
+# 🔥 முக்கியம்
+
+👉 இது number இல்ல ❌
+👉 இது string இல்ல ❌
+
+👉 இது:
+
+```text
+instructions encoded as bytes
+```
+
+---
+
+# ⚡ WHY different outputs?
+
+| Machine | Reason              |
+| ------- | ------------------- |
+| Linux32 | 32-bit architecture |
+| Linux64 | 64-bit architecture |
+| Windows | different ABI       |
+| Sun     | different CPU       |
+
+---
+
+👉 so:
+
+```text
+same C code ≠ same machine code
+```
+
+---
+
+# 💣 BIG INSIGHT
+
+```text
+Binary code portable இல்ல ❌
+Source code portable ✅
+```
+
+---
+
+# 🧠 Deep concept
+
+👉 CPU பார்க்குறது:
+
+```text
+bytes மட்டும்
+```
+
+👉 அது:
+
+```text
+"இது sum function"ன்னு தெரியாது ❗
+```
+
+---
+
+# ⚡ Analogy
+
+👉 imagine:
+
+```text
+C code → English sentence
+Machine code → binary instructions
+```
+
+---
+
+👉 different CPU:
+
+```text
+different language
+```
+
+---
+
+# 🔥 Unicode aside (short)
+
+👉 ASCII limitation:
+
+```text
+English மட்டும்
+```
+
+---
+
+👉 Unicode:
+
+```text
+100,000+ characters
+```
+
+---
+
+👉 UTF-8:
+
+```text
+ASCII compatible
+```
+
+---
+
+# 💥 FINAL SUMMARY
+
+## Practice 2.7
+
+```text
+"mnopqr"
+→ ASCII → 6d 6e 6f 70 71 72
+```
+
+---
+
+## Representing Code
+
+```text
+Program = bytes
+CPU = executes bytes
+Different machine = different bytes
+```
+
+---
+
+# 💣 FINAL ONE-LINE
+
+```text
+"String bytes மனிதர் உருவாக்கியது — Machine code bytes CPUக்கு instructions"
+```
+
+---
+
+🔥 நீ இப்போ புரிஞ்சுட்ட:
+
+👉 string vs number vs code
+👉 ASCII vs machine instructions
+👉 portability concept
+
+---
+
+👉 next (🔥 powerful):
+
+* assembly breakdown (இந்த bytes என்ன instruction?)
+* disassembler எப்படி read பண்ணும்
+* reverse engineering 😈
+
+சொல்லு 😎
