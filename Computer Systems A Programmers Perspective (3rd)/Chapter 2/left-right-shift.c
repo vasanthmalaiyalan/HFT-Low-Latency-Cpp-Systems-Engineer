@@ -14,7 +14,7 @@ int main() {
     printf("Original : %d (1001 0101)\n",u); //149
   
     unsigned char u_RightShift = u >> 1;
-    printf(">> 1(1001 0101) : %d \n",u_RightShift);//74, right shift means 1 shift gone so divided by 2 compare to decimal like 230/10 = 23 this is right shift 1 value gone base value binary %2
+    printf(">> 1(0100 1010) : %d \n",u_RightShift);//74, right shift means 1 shift gone so divided by 2 compare to decimal like 230/10 = 23 this is right shift 1 value gone base value binary %2
 
       // ==========================
     /*
@@ -31,7 +31,7 @@ int main() {
 
     printf("=== UNSIGNED Left Shift ===\n");
     unsigned char s_LeftShift = s << 1;
-    printf("<< 1 (1001 0101) : %d \n",s_LeftShift);// 42,left gone but add right value like 0 this same as decimal like 23x10 = 230, right 0 added same as binary base value 2 
+    printf("<< 1 (0000 0110) : %d \n",s_LeftShift);// 42,left gone but add right value like 0 this same as decimal like 23x10 = 230, right 0 added same as binary base value 2 
 
      // =====================================
      /*
@@ -50,23 +50,23 @@ int main() {
     // Signed << >> shift MSB Copy
     // =================================
 
-    signed char s = (signed char)0x95; //1001 0101 = -107,because signed start with (-128 to 127)
+    signed char si = (signed char)0x94; //1001 0100 = -107,because signed start with (-128 to 127)
     signed char l = (signed char)3; //small value
 
     /*
-    signed char s = 1001 0101
+    signed char s = 1001 0100
                 ↑
                 MSB = 1, weight = -128
-       Value = -128 + 0 + 0 + 16 + 0 + 4 + 0 + 1 = -107
+       Value = -128 + 0 + 0 + 16 + 0 + 4 + 0 + 0 = -108
     */
 
     printf("=== Signed Right Shift ===\n");
-    signed char s_Rightshift = s >> 1;
-    printf(" >> 1 (1001 0101) : %d \n",s_Rightshift);
+    signed char si_Rightshift = si >> 1;
+    printf(" >> 1 (1100 1010) : %d \n",si_Rightshift);
 
      // =====================================
      /*
-    Use behind Right shift (1001 0101) 11001 010 = 1100 1010
+    Use behind Right shift (1001 0100) 11001 010 = 1100 1010
 
     MSB-ரோட weight = -128 (negative! இதுதான் minus-ரோட source)
 
@@ -74,11 +74,11 @@ int main() {
      = -128  + 64 + 0  + 0 + 8 + 0 + 2  + 0
      = -128 + 74
      = -54
-    -107 / 2 = 53.5  — correct! //because binary base 2 
+    -108 / 2 = -54  — correct! //because binary base 2 
   */
   // =====================================
 
-  printf("Check  : -107 / 2 = %d\n",-107 / 2);
+  printf("Check  : -108 / 2 = %d\n",-108 / 2);
 
    printf("==== Signed Left Shift ====\n ");
    signed char l_LeftShift = l << 1;
