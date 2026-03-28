@@ -57,7 +57,7 @@ int main() {
     printf("unsigned int 4bytes = bit is 32 bits(2^31)=4294967295\n");
     printf("Easy method of conversation unsigned byte is represent positive like 4294967295 and signed represent MSB=1(negative) so unsigned - signed = conversation like (4294967295-4294967296=-1)\n");
     printf("Same as previous conversation like 16 bit ,signed to unsigned conversation (-12345+65536=53191)\n");
-    printf()
+    printf("Another Two complement method is actual method of compailer view")
 
 
 
@@ -218,5 +218,79 @@ flip bits
 /*
 Unsigned to signed Conversation (4294967295 to -1)
 
+🧠 Step 1: bits பார்க்கணும் (most important)
+4294967295 (unsigned) =
+11111111111111111111111111111111   (32 bits)
+
+👉 இதுதான் முக்கியம் — value இல்ல, bits தான் matter
+
+🧠 Step 2: signed ஆக interpret பண்ணு
+
+அதே bits:
+
+11111111111111111111111111111111
+
+👉 signed (two’s complement) rules apply பண்ணணும்
+
+🔥 Rule: MSB (first bit)
+1 → negative number
+
+👉 so இது negative
+
+🧠 Step 3: value கண்டுபிடிக்க
+Method (flip + 1)
+1️⃣ flip bits
+11111111111111111111111111111111
+↓
+00000000000000000000000000000000
+2️⃣ +1
+00000000000000000000000000000001
+
+👉 result = 1
+
+🎯 Final:
+= -1
+⚡ இன்னும் easy shortcut
+
+👉 formula:
+
+signed = unsigned - 2^32
+
+👉 apply பண்ணு:
+
+4294967295 - 4294967296 = -1
+🧠 Intuition (நல்லா புரிய)
+
+👉 unsigned range:
+
+0 → 4294967295
+
+👉 signed range:
+
+-2147483648 → 2147483647
+
+👉 same bits:
+
+11111111111111111111111111111111
+unsigned → max value
+signed → last negative (-1)
+💥 Wrap-around concept
+0
+↓ (minus 1)
+-1
+
+👉 ஆனால் unsigned worldல:
+
+0 - 1 = 4294967295
+🎯 FINAL SIMPLE IDEA
+
+👉 இது தான் answer:
+
+4294967295 (unsigned)
+= same bits
+= signed-ஆ பார்த்தா
+= -1
+🧠 One line memory trick
+ALL 1 bits → always -1 (signed)
 
 */
