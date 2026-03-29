@@ -226,3 +226,5 @@ two’s complement = one negative weight + rest positive
 
 வேணும்னா next:
 👉 இந்த formula எப்படி derive பண்ணியது deep proof காட்டுறேன் 😏
+
+
