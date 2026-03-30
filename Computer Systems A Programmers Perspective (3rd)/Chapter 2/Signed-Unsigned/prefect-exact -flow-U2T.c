@@ -8,7 +8,7 @@
     }
 
     // Two's Complement forward: -1 -> 0xFFFFFFF
-    uint32_t twos_complement_forward(uint32_t positive) {
+    uint32_t twos_complement_forward(uint_t positive) {
         uint32_t flipped = ~positive; // flip all bits
         uint32_t result = flipped + 1; //add 1
         return result;
@@ -102,7 +102,7 @@
         printf("  MSB = 1 -> NEGATIVE!\n");
         printf("  Reverse two's complement:\n");
 
-        uint32_t magnitude = twos_complement_reverse(*raw);
+        unint32_t magnitude = twos_complement_reverse(*raw);
         printf("    flip 0x%08X  -> 0x%08X\n", *raw, ~(*raw));
         printf("    +1     -> 0x%08X = %u\n", magnitude, magnitude);
         printf("   Add '-' signed -> -%u\n\n", magnitude);
