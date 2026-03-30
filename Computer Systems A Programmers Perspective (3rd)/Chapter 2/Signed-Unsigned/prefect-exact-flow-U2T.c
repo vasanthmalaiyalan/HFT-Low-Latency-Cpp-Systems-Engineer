@@ -8,7 +8,7 @@
     }
 
     // Two's Complement forward: -1 -> 0xFFFFFFF
-    uint32_t twos_complement_forward(uint_t positive) {
+    uint32_t twos_complement_forward(uint32_t positive) {
         uint32_t flipped = ~positive; // flip all bits
         uint32_t result = flipped + 1; //add 1
         return result;
@@ -27,7 +27,7 @@
         // STEP 1: COMPILE TIME - -1 memory execution time
         //====================================
         printf("=============================\n");
-        printf("  STEP 1: COMPILE TIME        \n");
+        printf("||  STEP 1: COMPILE TIME    ||\n");
         printf("=============================\n\n");
 
         printf("Source code: int x = -1;\n\n");
@@ -65,7 +65,7 @@
         // =====================================
 
         printf("===============================\n");
-        printf("   STEP 2: RUNTIME - CPU Stores \n");
+        printf(" ||  STEP 2: RUNTIME - CPU Stores  ||\n");
         printf("=================================\n\n");
 
         int x = -1; // actual variable
@@ -102,7 +102,7 @@
         printf("  MSB = 1 -> NEGATIVE!\n");
         printf("  Reverse two's complement:\n");
 
-        unint32_t magnitude = twos_complement_reverse(*raw);
+        uint32_t magnitude = twos_complement_reverse(*raw);
         printf("    flip 0x%08X  -> 0x%08X\n", *raw, ~(*raw));
         printf("    +1     -> 0x%08X = %u\n", magnitude, magnitude);
         printf("   Add '-' signed -> -%u\n\n", magnitude);
@@ -147,7 +147,7 @@
         printf("_________________________________\n");
 
         for (int i = 0; i < n; i++) {
-            int v = value[i];
+            int v = values[i];
             uint32_t *bits   = (uint32_t *)&v;
             printf("%-6d 0x%08X    %-12u  %d\n",v, *bits, (unsigned)*bits, v);
         }
