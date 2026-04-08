@@ -11,12 +11,12 @@ int twos_complement_value(const char *binary, int bits) {
     // Calulate value of remaining bits (position bits-2 down to 0)
     for(int i = 1; i < bits; i++) {
         if(binary[i] == '1') {
-            value += pow(2, bits - 1 - i);
+             value += 1 << (bits - 1 - i);
         }
     }
     //Apply MSB as Negative
     if(binary[0] == '1') {
-        value = -(pow(2, bits - 1)) + value;
+        value = -(1 << (bits - 1)) + value;
     }
 
     return value;
@@ -27,11 +27,12 @@ unsigned int unsigned_value(const char *binary, int bits) {
     unsigned int value = 0;
     for(int i = 0; i < bits; i++) {
         if(binary[i] == '1') {
-            value += pow(2, bits - 1 - i);
+           value += 1 << (bits - 1 - i);  // Same as pow(2, bits-1-i)
         }
     }
     return value;
 }
+
 
 int main() {
     // Your binary number
@@ -51,15 +52,15 @@ int main() {
 
     printf("MSB = %c\n", msb);
     printf("Remaining bits = %s\n", remaining);
-    printf("2^(w-1) = 2^%d = %.0f\n\n",bits-1, pow(2, bits-1));
+    printf("2^(w-1) = 2^%d = %d\n\n",bits-1, 1 << (bits-1));
 
     // Calculate remaining bits value
     unsigned int remaining_value = unsigned_value(remaining, bits-1);
     printf("Value of remaining bits (%s) = %u\n", remaining, remaining_value);
 
     //Apply formula
-    int result = -(msb == '1' ? pow(2, bit-1) : 0) + remaining_value;
-    printf("\nResult = -(%.0f) + %u = %d\n", pow(2, bits-1), remaining_value, result);
+    int result = -(msb == '1' ? (1 << (bits-1)) : 0) + remaining_value;
+    printf("\nResult = -(%d) + %u = %d\n", 1 << (bits-1), remaining_value, result);
 
     printf("\n===================================\n");
     printf("Final answer: %s₂ = %d\n", binary, result);
@@ -72,7 +73,7 @@ int main() {
     printf("As unsigned: %u\n", u);
 
     if(binary[0] == '1') {
-        int verified = u - pow(2, bits);
+        int verified = u - (1 << bits);  // u - 2^bits
         printf("As signed (two's complement): %d\n", verified);
         printf("Matches formula? %s\n", verified == result ? "✓ YES" : "✗ NO");
     } else {
@@ -93,12 +94,12 @@ int main() {
     // Show remaining bits sum
     printf("%s", remaining);
     printf("₂)\n");
-    printf("    = -%.0f + (", pow(2, bits-1));
+    printf("    = -%d + (", 1 << (bits-1));
 
     // Show expanded form of remaining bits
     for(int i = 0; i < bits-1; i++) {
         if(remaining[i] == '1') {
-            printf("%.0f", pow(2, bits-2-i));
+            printf("%d", 1 << (bits-2-i));
             // check if not the last 1
             int has_more = 0;
             for(int j = i+1; j < bits-1; j++) {
@@ -112,7 +113,7 @@ int main() {
     }
     printf(")\n");
 
-    printf("    = -%.0f + %u\n", pow(2, bits-1), remaining_value);
+    printf("    = -%d + %u\n", 1 << (bits-1), remaining_value);
     printf("    = %d\n", result);
 
     return 0;
