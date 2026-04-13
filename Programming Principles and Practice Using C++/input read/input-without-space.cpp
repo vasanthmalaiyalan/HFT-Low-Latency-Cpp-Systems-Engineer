@@ -16,3 +16,10 @@ int main() {
 
     return 0;
 }
+
+/*
+ ./a.out
+Please enter your first name:
+vasanth
+Hello, vasanth!
+*/
