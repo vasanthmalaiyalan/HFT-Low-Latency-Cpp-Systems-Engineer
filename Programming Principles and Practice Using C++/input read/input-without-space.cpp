@@ -3,7 +3,7 @@
 
 int main() {
     // Prompt
-    std::cout << "Please enter your first name:\n";
+    std::cout << "Please enter your first name: ";
     
     // Variable (object)
     std::string first_name;
