@@ -1,1 +1,1 @@
-`g++ -std=c++20 -Wall -Wextra test.cpp -o test`
+`g++ -std=c++17 -Wall -Wextra -Werror -pedantic first.cpp `
