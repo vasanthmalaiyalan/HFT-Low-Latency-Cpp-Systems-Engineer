@@ -23,7 +23,7 @@ int main() {
     std::string str = "Hello";
 
     // Intermediate
-    int arr[4] = {1,2,3,4};
+    int arr[8] = {1,2,3,4,5,6,7,89}; // 1 int is 4 bytes so 32 bytes
     int x = 10;
     int* ptr = &x;
 
