@@ -15,7 +15,7 @@ int main() {
     // loop through vector
     std::cout << "All values:\n";
     for (size_t i = 0; i < numbers.size(); ++i) {
-        std::cout << numbers[i] << ' ';
+        std::cout << numbers[i] << ' '; // why use size_t because size() return unsigned
     } 
 
     // create empty vector with size
