@@ -62,6 +62,37 @@ int main() {
     return 0;
 }
 
+//output
+/*
+======== BASIC TYPES ==========
+char size: 1
+bool size: 1
+short size: 2
+int size: 4
+long size: 8
+long long size: 8
+float size: 4
+double size: 8
+
+========== STRING =============
+string object size: 32
+string length: 5
+
+ ========== ARRAY ==========
+array size: 32
+array length: 8
+
+======== POINTER ==========
+pointer size: 8
+
+========= CLASS ==========
+class object size: 16
+
+========== VECTOR ==========
+vector object size: 24
+vector length: 5
+*/ 
+
 
 /*
 Ahh now I understand clearly 🔥 —
