@@ -17,7 +17,7 @@ int main() {
     
     // mean
     double sum = 0;
-    for (double x : temps) // range based loop iterate like (for loop)
+    for (double x : temps) // range based loop iterate like (for loop) for ( type variable : collection )
         sum += x;
 
     std::cout << "Average: " << sum / temps.size() << '\n';
