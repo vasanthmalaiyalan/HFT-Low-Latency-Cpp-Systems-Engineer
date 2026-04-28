@@ -63,3 +63,25 @@ int main() {
 
     return 0;
 }
+
+/*
+Enter temperature (stop with non-number like x):
+1.2 3.4 1.1 5.6 7.8 32.4
+Added: 1.2 | Size: 1 | Capacity: 1
+Added: 3.4 | Size: 2 | Capacity: 2
+Added: 1.1 | Size: 3 | Capacity: 4
+Added: 5.6 | Size: 4 | Capacity: 4
+Added: 7.8 | Size: 5 | Capacity: 8
+Added: 32.4 | Size: 6 | Capacity: 8
+x
+
+Average: 8.58333
+
+After increase:
+1.32 3.74 1.21 6.16 8.58 35.64 
+
+Sorted values:
+1.21 1.32 3.74 6.16 8.58 35.64 
+
+Median: 6.16
+ */
