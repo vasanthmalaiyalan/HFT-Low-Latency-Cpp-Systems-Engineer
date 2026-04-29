@@ -154,3 +154,189 @@ start → until \0 → print ✔️
 👉 memory diagram deep
 
 Just tell 👍
+---------
+
+``"hello":
+pointer type → pointer catch தேவை` array எப்படி pointer type ஆகும்? `hello":
+pointer type ``
+
+நல்ல கேள்வி 🔥 — இங்கே தான் “array → pointer” concept cleanஆ புரிஞ்சிக்கணும்.
+
+---
+
+# 🧠 1. `"hello"` உண்மையில் என்ன?
+
+```cpp
+"hello"
+```
+
+👉 இது **pointer இல்ல** ❗
+👉 actual type:
+
+```text
+const char[6]
+```
+
+👉 memory:
+
+```text
+h  e  l  l  o  \0
+```
+
+---
+
+# ⚠️ 2. அப்படின்னா pointer எப்படி ஆகுது?
+
+👉 இது automatic conversion:
+
+```text
+array → pointer decay
+```
+
+---
+
+# 🔄 3. Decay example
+
+```cpp
+const char* p = "hello";
+```
+
+👉 internally:
+
+```text
+const char[6] → const char*
+```
+
+👉 meaning:
+
+```text
+pointer → 'h' இருக்கும் address
+```
+
+---
+
+# 🧪 4. Simple proof
+
+```cpp
+#include <iostream>
+
+int main()
+{
+    const char* p = "hello";
+
+    std::cout << p << '\n';     // full string
+    std::cout << *p << '\n';    // first char மட்டும்
+
+    return 0;
+}
+```
+
+---
+
+# 🧠 5. Why decay நடக்குது?
+
+👉 C/C++ design:
+
+```text
+array name → pointer to first element
+```
+
+---
+
+## Example:
+
+```cpp
+char arr[] = "hello";
+
+char* p = arr;
+```
+
+👉 same concept ✔️
+
+---
+
+# 🔥 6. Exception context
+
+```cpp
+throw "hello";
+```
+
+👉 இது:
+
+```text
+const char[6]
+```
+
+👉 but throw செய்யும் போது:
+
+```text
+decay → const char*
+```
+
+👉 அதனால்:
+
+```cpp
+catch (const char* msg)
+```
+
+👉 match ✔️
+
+---
+
+# ⚠️ 7. Important clarification
+
+👉 `"hello"`:
+
+```text
+❌ pointer அல்ல (original)
+✔️ array
+```
+
+👉 but:
+
+```text
+use பண்ணும்போது → pointer ஆகும்
+```
+
+---
+
+# 🎯 8. Visual
+
+```text
+"hello"
+   ↓
+[ h e l l o \0 ]   (array)
+   ↓ decay
+pointer → h
+```
+
+---
+
+# 💬 Simple Tamil Summary
+
+👉 `"hello"`:
+
+* array (`const char[]`)
+
+👉 use பண்ணும்போது:
+
+* pointer ஆக மாறும் (`const char*`)
+
+---
+
+# 🔥 One-line memory
+
+👉
+
+> “String literal is array, but behaves like pointer when used”
+
+---
+
+# 🚀 If you want next
+
+👉 array vs pointer full deep difference
+👉 why decay happens internally
+👉 function argumentsல என்ன நடக்குது
+
+Just tell 👍
+----------
