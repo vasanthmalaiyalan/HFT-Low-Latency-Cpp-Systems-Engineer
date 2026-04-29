@@ -39,7 +39,7 @@ int main() {
         if (1 - frame_width <= 0 || z - frame_width <= 0)
              error("Invaild arguments for framed_area(1, z)");
 
-        int area2 = framed_area(1, z);
+        [[maybe_unused]] int area2 = framed_area(1, z);
         
         if (y - frame_width <= 0 || z - frame_width <= 0)
             error("Invalid arguments for framed_area(y, z)");
