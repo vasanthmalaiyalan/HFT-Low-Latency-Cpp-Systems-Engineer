@@ -14,4 +14,6 @@ int main() {
     catch (std::runtime_error& e) {
         std::cout << "Error: " << e.what() << '\n'; // what is return and e is variable of throwing error
     }
+
+    return 0;
 }
