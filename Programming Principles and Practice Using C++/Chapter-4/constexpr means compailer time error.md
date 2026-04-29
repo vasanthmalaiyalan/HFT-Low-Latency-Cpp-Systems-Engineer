@@ -64,4 +64,4 @@ constexpr int square(int x) {        // math functions
 
 **Simple rule:**
 
-> `constexpr` = **compile time guarantee.** Runtime-ல calculate பண்ண வேண்டாம் என்று தெரிஞ்சா போடு — program faster ஆகும்.
+> `constexpr` = **compile time guarantee.** Runtime-ல calculate பண்ண வேண்டாம் என்று தெரிஞ்சா போடு — program faster ஆகும்..
