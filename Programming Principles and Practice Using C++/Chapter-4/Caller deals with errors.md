@@ -283,3 +283,182 @@ int area2 = framed_area(1, z);
 ---
 
 If you want, I’ll explain that next 👍
+
+--------
+
+Good 🔥 — இப்ப நீ கேட்டது முக்கியம்:
+👉 **“Caller handles errors — clean & best code எப்படி எழுதலாம்?”**
+
+நான் ஒரு **clean, readable, practical version** கொடுக்கிறேன் (PPP style + real-world).
+
+---
+
+# 💻 ✅ Best `.cpp` (Caller handles errors — clean version)
+
+```cpp
+#include <iostream>
+#include <stdexcept>   // for runtime_error
+
+// simple error function
+void error(const std::string& msg)
+{
+    throw std::runtime_error(msg);
+}
+
+// library-like function (we assume we cannot modify this)
+int area(int length, int width)
+{
+    return length * width;
+}
+
+// helper function
+int framed_area(int x, int y)
+{
+    constexpr int frame_width = 2;
+    return area(x - frame_width, y - frame_width);
+}
+
+int main()
+{
+    try {
+        int x = -1;
+        int y = 2;
+        int z = 3;
+
+        // ✅ caller checks before calling area()
+        if (x <= 0 || y <= 0)
+            error("Invalid arguments for area()");
+
+        int area1 = area(x, y);
+
+        // ✅ caller checks before calling framed_area()
+        constexpr int frame_width = 2;
+
+        if (1 - frame_width <= 0 || z - frame_width <= 0)
+            error("Invalid arguments for framed_area(1, z)");
+
+        int area2 = framed_area(1, z);
+
+        if (y - frame_width <= 0 || z - frame_width <= 0)
+            error("Invalid arguments for framed_area(y, z)");
+
+        int area3 = framed_area(y, z);
+
+        // ✅ prevent divide by zero
+        if (area3 == 0)
+            error("Division by zero");
+
+        double ratio = double(area1) / area3;
+
+        std::cout << "ratio = " << ratio << '\n';
+    }
+    catch (std::runtime_error& e) {
+        std::cout << "Error: " << e.what() << '\n';
+    }
+
+    return 0;
+}
+```
+
+---
+
+# 🧠 Why this is “best version” (for caller approach)
+
+---
+
+## ✅ 1. Error handling centralized
+
+```cpp
+try { ... } catch(...)
+```
+
+👉 crash ஆகாது ✔️
+👉 clean output ✔️
+
+---
+
+## ✅ 2. `error()` function
+
+```cpp
+throw std::runtime_error(msg);
+```
+
+👉 professional way ✔️
+
+---
+
+## ✅ 3. Magic constant avoided
+
+```cpp
+constexpr int frame_width = 2;
+```
+
+👉 hardcoding இல்ல ✔️
+
+---
+
+## ✅ 4. Safe checks
+
+* invalid input
+* negative values
+* divide by zero
+
+---
+
+# ⚠️ But IMPORTANT Reality
+
+👉 Even this “best caller version”:
+
+❌ still not ideal design
+
+👉 காரணம்:
+
+```text
+caller knows internal logic (frame_width)
+```
+
+👉 coupling problem ❗
+
+---
+
+# 🎯 Final Understanding
+
+👉 This approach:
+
+✔️ works
+✔️ safe
+❌ not scalable
+
+---
+
+# 💬 Simple Tamil Summary
+
+👉 Caller handle error:
+
+* call முன்னாடி check பண்ணும்
+* error வந்தா throw பண்ணும்
+
+👉 நல்ல code தான்
+👉 ஆனா design perfect இல்லை
+
+---
+
+# 🔥 One-line truth
+
+👉
+
+> “Caller checks work — but callee checks are better”
+
+---
+
+# 🚀 Next (IMPORTANT 🔥)
+
+👉 Want **BEST design version**?
+
+👉 I’ll show:
+
+* function itself handle error
+* clean API design
+* real-world best practice
+
+Just say: **“callee version”** 👍
