@@ -26,3 +26,10 @@ int main() {
 
     return 0;
 }
+
+/*
+💡 Key Points
+✔️ auto call (object create ஆன உடனே)
+✔️ class name same
+✔️ no return type
+*/
