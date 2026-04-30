@@ -267,3 +267,161 @@ If you want next 🔥
 👉 real memory layout demo
 
 Just tell 👍
+
+------------
+
+சரி 🔥 — இப்ப **public vs private** difference super clear ஆகணும்னா
+நாம் **2 separate examples** பார்ப்போம் (one bad, one good).
+
+---
+
+# 🔴 Example 1: ONLY `public` (Danger ⚠️)
+
+👉 File: `public_only.cpp`
+
+```cpp id="p1"
+#include <iostream>
+
+class BankAccount {
+public:
+    int balance;   // anyone can change ❌
+};
+
+int main() {
+    BankAccount acc;
+
+    acc.balance = 1000;
+    std::cout << "Balance: " << acc.balance << "\n";
+
+    // ❌ dangerous change
+    acc.balance = -5000;
+
+    std::cout << "After hacking: " << acc.balance << "\n";
+
+    return 0;
+}
+```
+
+---
+
+## 🧠 Problem
+
+👉 Output:
+
+```text id="p2"
+Balance: 1000
+After hacking: -5000
+```
+
+👉 Anyone can:
+
+* break logic
+* set invalid values
+
+👉 ❌ NOT SAFE
+
+---
+
+# 🟢 Example 2: `private` + controlled access (Best Practice)
+
+👉 File: `private_safe.cpp`
+
+```cpp id="p3"
+#include <iostream>
+
+class BankAccount {
+private:
+    int balance;   // protected ✔️
+
+public:
+    void deposit(int amount) {
+        if (amount > 0)
+            balance += amount;
+    }
+
+    void withdraw(int amount) {
+        if (amount > 0 && amount <= balance)
+            balance -= amount;
+    }
+
+    int getBalance() {
+        return balance;
+    }
+};
+
+int main() {
+    BankAccount acc;
+
+    acc.deposit(1000);
+    std::cout << "Balance: " << acc.getBalance() << "\n";
+
+    // ❌ direct access not allowed
+    // acc.balance = -5000;  // compile error
+
+    acc.withdraw(500);
+    std::cout << "After withdraw: " << acc.getBalance() << "\n";
+
+    return 0;
+}
+```
+
+---
+
+## 🧠 Output
+
+```text id="p4"
+Balance: 1000
+After withdraw: 500
+```
+
+---
+
+# 💥 Difference (Clear Table)
+
+| Feature        | public only | private + public methods |
+| -------------- | ----------- | ------------------------ |
+| Safety         | ❌ இல்லை     | ✔️ உள்ளது                |
+| Control        | ❌ இல்லை     | ✔️ உள்ளது                |
+| Real-world use | ❌ இல்லை     | ✔️ அதிகம்                |
+
+---
+
+# 🧠 Tamil Explanation
+
+👉 public மட்டும் use பண்ணினா:
+
+* யாரும் data change பண்ணலாம் ❌
+
+👉 private use பண்ணினா:
+
+* control இருக்கும் ✔️
+* rules enforce பண்ணலாம் ✔️
+
+---
+
+# 🎯 Real Insight
+
+👉 Real कंपनிகள்:
+
+✔️ data → `private`
+✔️ access → functions
+
+---
+
+# 🚀 Final Takeaway
+
+```text id="p5"
+public → expose
+private → protect
+```
+
+---
+
+If you want next 🔥
+
+👉 public/private memory layout
+👉 real-world class design patterns
+👉 why getters/setters sometimes bad
+
+Just tell 👍
+
