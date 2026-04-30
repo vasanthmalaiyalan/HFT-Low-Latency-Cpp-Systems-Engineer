@@ -16,7 +16,7 @@ class BankAccount {
        double balance; // outside direct access not allowed
 
     public:
-       // Constructor -> initial setup
+       // Constructor -> initial setup with class name mandatory
        BankAccount(double initial) {
         if (initial >= 0)
             balance = initial;
@@ -70,7 +70,7 @@ int main() {
 
     // ------------- CLASS USAGE ---------------
     //BankAccount acc;
-    BankAccount acc(1000); // object creation
+    BankAccount acc(1000); // object creation with auto call of constructor
 
     std::cout << "Bank Account:\n";
 
