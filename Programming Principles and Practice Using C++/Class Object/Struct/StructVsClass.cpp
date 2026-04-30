@@ -89,3 +89,17 @@ int main() {
 
     return 0;
 }
+
+/*
+./a.out 
+Student Data:
+ID: 101
+Name: Vasanth
+Marks: 85.5
+After wrong update: -100
+Bank Account:
+Balance: 1200
+Invaild deposite!
+Invaild withdraw!
+Final Balance; 1200
+*/
