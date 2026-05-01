@@ -41,3 +41,11 @@ int main() {
     std::cout << "Average: " << s.average() << '\n';
     return 0; 
 }
+
+/*
+Stack               Heap
+────────────        ──────────────────────
+s (object)          [85][90][78][92][88]
+  marks ───────────►
+  count = 5
+*/
