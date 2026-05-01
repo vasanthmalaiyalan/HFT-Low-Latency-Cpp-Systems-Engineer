@@ -490,3 +490,82 @@ b.weight = 20;     →   mov [b_addr + 4], 20
 **Simple rule:**
 
 > Object உள்ளே data மட்டும். "இது value, இது weight" என்று யாருக்கும் runtime-ல தெரியாது. Compiler class-ஐ பார்த்து offset கணக்கு போட்டு, உன் code-ஐ address+offset instructions-ஆ மாத்திடும் — compile முடிஞ்சா அந்த knowledge போயிடும்.
+
+---
+
+## ஆமா — ஆனா 2 Stages இருக்கு!
+
+---
+
+## Stage 1 — Compile Time
+
+```cpp
+Box b;
+```
+
+Compiler பார்க்கும்:
+```
+Box = 8 bytes
+→ stack-ல 8 bytes வேணும்
+→ stack frame-ல note பண்ணும்
+```
+
+ஆனா **actual address இல்ல** — function-ஓட stack frame size மட்டும் calculate ஆகும்.
+
+---
+
+## Stage 2 — Runtime (Function Call ஆகும்போது)
+
+`main()` call ஆகும்போது:
+
+```
+CPU → stack pointer (rsp) move பண்ணும்
+
+Before:
+rsp → 0x200
+
+After Box b:
+rsp → 0x1F8   ← 8 bytes கீழே போச்சு
+
+இப்போ:
+0x1F8 to 0x1FF → b-க்கு reserve ஆச்சு ✅
+```
+
+**அந்த நிமிஷம் address fix ஆகும்.**
+
+---
+
+## Memory View
+
+```
+Function call ஆகும்போது:
+
+Stack
+──────────────────────────
+0x200   ← old rsp
+0x1FC   ← (other vars)
+0x1F8   ← b starts here  ← இந்த address runtime-ல fix
+0x1FC      (b.weight)
+──────────────────────────
+```
+
+---
+
+## Simple Timeline
+
+```
+Compile time:
+  "b-க்கு 8 bytes வேணும்" — note மட்டும்
+
+Runtime:
+  main() call → stack frame create
+              → rsp - 8
+              → address fix ✅
+              → b உள்ளே garbage values
+```
+
+---
+
+**Simple rule:**
+
+> Compile time-ல size மட்டும் தெரியும். Actual address — function call ஆகி stack frame create ஆகும்போது runtime-ல fix ஆகும்.
