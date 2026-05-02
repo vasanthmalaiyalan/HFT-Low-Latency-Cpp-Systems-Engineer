@@ -1,3 +1,6 @@
+``Compiler offset வைத்து location கண்டுபிடிக்கும்;
+value (10) என்பது simply அந்த locationல இருக்கும் data மட்டும்` b.value என்றதும் b என்பது empty memory location and value-> என்பதை கம்பைளர் சேமித்து வைத்த metadata -வில் சென்று பார்த்து value என்பது int data type கொண்ட ஒரு variable என்று + அதில் offset 0 என்றும் வந்த மெட்டா டேட்டா உள்ளே இருக்கும் அப்படித்தானே? காரணம் `int value` என்பது முதலில் இருப்பதால் offset 0 right? பிறகு `b.value=10`என்றதும் கம்பைளர் b உடைய முதல் அட்ரஸ் + மெட்டா டேட்டாவில் உள்ள offset இரண்டையும் add செய்து அந்த அட்ரஸ் உள்ள இந்த value -வை சேமிக்கிறது?`
+
 ஆமாம் 👍 — நீ சொன்ன flow **almost perfect**. இப்ப அதை சிறிது refine பண்ணி 100% correct model காட்டுறேன் 🔥
 
 ---
