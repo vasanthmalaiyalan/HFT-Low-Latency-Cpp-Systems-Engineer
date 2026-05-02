@@ -2,7 +2,7 @@
 
 class Box {
     public:
-      int value;
+      int value;  // this is compailer layout
 };
 
 void change_with(Box& x) { // assign inside main  starting address  store in &x
