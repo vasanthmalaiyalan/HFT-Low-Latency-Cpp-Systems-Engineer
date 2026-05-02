@@ -40,7 +40,20 @@ int main() {
     std::cout << "After change_with, main b value: " << b.value << "\n";
 
     return 0;
-
-
-
 }
+
+/*
+./a.out 
+Main b address: 0x7ffc61508b84
+Main b value: 10
+
+[WITHOUT &]
+Function b address: 0x7ffc61508b6c
+Function b value: 100
+After change_without, main b value: 10
+
+[WITH &]
+Function b address: 0x7ffc61508b84
+Function b value: 200
+After change_with, main b value: 200
+*/
