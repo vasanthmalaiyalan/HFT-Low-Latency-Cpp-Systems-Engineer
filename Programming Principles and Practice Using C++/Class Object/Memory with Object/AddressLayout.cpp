@@ -21,4 +21,12 @@ int main() {
     // Address of members
     std::cout << "Address of b.value: " << &b.value << "\n";
     std::cout << "Address of b.weight: " << &b.weight << "\n";
+
+    // diffrence (offset) 
+    std::cout << "Offset (weight - value): " << (char*)&b.weight - (char*)&b.value << " byte\n\n";
+
+    // size
+    std::cout << "Size of Box: " << sizeof(Box) << " bytes\n";
+
+    return 0;
 }
