@@ -30,3 +30,12 @@ int main() {
 
     return 0;
 }
+
+/*
+Initial value (garbage): 29138
+Value: 10
+Address of object b: 0x7ffc36ccf9a4
+Address of b.value: 0x7ffc36ccf9a4
+Size of Box: 4 bytes
+Size of Object: 4 bytes
+*/
