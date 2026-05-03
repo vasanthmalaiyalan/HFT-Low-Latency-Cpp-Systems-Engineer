@@ -65,3 +65,40 @@ Object at 0x7ffeefe96ab0 -> kind: 8, value: 3.14
 Assignment(t1 = t2):
 Object at 0x7ffeefe96aa0 -> kind: 8, value: 3.14
 */
+
+
+//===============================================
+
+/*
+🔥 What this proves
+✔ 1. Object is NOT empty
+kind + value are initialized
+✔ 2. this pointer
+Constructor automatically knows which object
+✔ 3. Separate objects
+t1, t2, t3 → all different memory
+✔ 4. Copy vs Assignment
+Token t3 = t2;  // copy constructor
+t1 = t2;        // assignment
+🧠 Deep Understanding
+
+👉 When you write:
+
+Token t1 {'+'};
+
+Internally:
+
+1. memory allocate for t1
+2. constructor called
+3. this → points to t1
+4. values stored inside t1 memory
+💬 Simple Tamil Summary
+
+👉 இந்த code காட்டுவது:
+
+object empty இல்ல ❌
+constructor மூலம் initialize ஆகும் ✔️
+this pointer மூலம் object identify ஆகும் ✔️
+🎯 Final One-Line
+Object creation = memory + constructor + this pointer initialization
+*/
