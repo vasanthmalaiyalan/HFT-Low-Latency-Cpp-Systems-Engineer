@@ -149,3 +149,160 @@ If you want next 🔥
 👉 string-based parsing vs stream parsing
 
 Just tell 👍
+---------
+
+``std::cin >> ch;
+std::cin.putback(ch);
+std::cin >> val;` putback மூலம் மீண்டும் buffer undo செய்து `std::cin >> val;` cin மீண்டும் அந்த buffer-ல இருந்து ரீட் செய்து val -ல ஸ்டோர் செய்கிறது அல்லவா?`
+
+ஆமாம் ✔️ — நீ சொன்ன flow சரிதான், ஆனால் அதை **preciseஆ புரிஞ்சிக்கணும்** 👇
+
+---
+
+# 🧠 Code
+
+```cpp
+std::cin >> ch;
+std::cin.putback(ch);
+std::cin >> val;
+```
+
+---
+
+# 🟢 Step-by-step என்ன நடக்குது?
+
+## 🟡 Step 1
+
+```cpp
+std::cin >> ch;
+```
+
+👉 ஒரு character read ஆகும்
+
+```text
+Input: 12.5+3
+ch = '1'
+pointer → '2'
+```
+
+---
+
+## 🟡 Step 2
+
+```cpp
+std::cin.putback(ch);
+```
+
+👉 last read character (`'1'`) மீண்டும் streamக்கு திருப்பி வைக்கப்படும்
+
+```text
+pointer → '1'
+```
+
+👉 buffer content change ஆகாது ❌
+👉 pointer மட்டும் move ஆகும் ✔️
+
+---
+
+## 🟡 Step 3
+
+```cpp
+std::cin >> val;
+```
+
+👉 இப்ப pointer மீண்டும் `'1'`ல இருக்கிறது
+
+👉 so:
+
+```text
+val = 12.5
+```
+
+---
+
+# 🧠 Key Understanding
+
+👉 நீ சொன்னது:
+
+> “cin மீண்டும் அந்த bufferல இருந்து read செய்து valல store செய்கிறது”
+
+✔️ Correct
+
+👉 but more precise:
+
+```text
+putback → pointer rewind
+>> val → அந்த rewind point-ல இருந்து full number read
+```
+
+---
+
+# 🔥 Why this is powerful?
+
+👉 first நாம்:
+
+```text
+single char detect பண்ணுறோம்
+```
+
+👉 பிறகு:
+
+```text
+full number read பண்ணுறோம்
+```
+
+---
+
+# 🧪 Without putback
+
+```cpp
+std::cin >> ch;   // '1'
+std::cin >> val;  // 2.5 ❌
+```
+
+👉 first digit miss ஆகும்
+
+---
+
+# 🟢 With putback
+
+```cpp
+std::cin >> ch;        // '1'
+std::cin.putback(ch);  // rewind
+std::cin >> val;       // 12.5 ✔️
+```
+
+---
+
+# 💬 Simple Tamil
+
+👉 `putback`:
+
+* “நாம் read பண்ணியது cancel பண்ணு”
+* pointer பின்னால் போகும்
+* அதே இடத்திலிருந்து மீண்டும் read செய்யலாம்
+
+---
+
+# 🎯 Final Answer
+
+```text
+ஆம் — putback மூலம் rewind செய்து, cin மீண்டும் அந்த இடத்திலிருந்து read பண்ணி val-ல் store செய்கிறது
+```
+
+---
+
+# 🚀 One-line
+
+```text
+putback = rewind → next read starts from same position again
+```
+
+---
+
+If you want next 🔥
+
+👉 cin >> எப்படி number parse பண்ணுது (internal logic)
+👉 tokenizer without putback (advanced method)
+
+Just tell 👍
