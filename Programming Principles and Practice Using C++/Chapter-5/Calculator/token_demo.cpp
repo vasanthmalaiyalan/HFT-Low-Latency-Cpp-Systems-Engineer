@@ -12,7 +12,7 @@ class Token {
        double value; // value (only used if kind == '8)
 
        // constructor for number tokens
-       Token(char k) : king{k}, value{0.0} {}
+       Token(char k) : kind{k}, value{0.0} {}
 
        // constructor for number tokens
        Token(char k, double v) : kind{k}, value{v} {}
