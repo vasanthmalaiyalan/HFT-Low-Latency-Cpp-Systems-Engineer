@@ -177,3 +177,181 @@ If you want 🔥
 👉 range-for எப்படி compiler expand பண்ணுது
 
 Just tell 👍
+---
+
+சூப்பர் 👍 — இங்க தான் “reference” concept + member access clear ஆகணும்.
+
+---
+
+# 🧠 Key line
+
+```cpp
+for (const Token& t : tok)
+```
+
+👉 `t` என்பது:
+
+```text
+tok[i] (vectorல உள்ள ஒரு Token object)க்கு reference
+```
+
+---
+
+# 🟢 1. `t.kind` என்ன அர்த்தம்?
+
+👉 `t` → ஒரு Token object (reference)
+
+👉 `kind` → அந்த object-ன் member
+
+---
+
+## 💡 Meaning
+
+```text
+t.kind = அந்த Token object-ன் kind value
+```
+
+---
+
+# 🧪 Example
+
+```cpp
+tok = [
+    Token{'8', 12.5},
+    Token{'+'},
+    Token{'8', 3}
+];
+```
+
+---
+
+## Loop:
+
+### iteration 1:
+
+```text
+t → Token{'8', 12.5}
+t.kind → '8'
+t.value → 12.5
+```
+
+---
+
+### iteration 2:
+
+```text
+t → Token{'+'}
+t.kind → '+'
+```
+
+---
+
+### iteration 3:
+
+```text
+t → Token{'8', 3}
+t.kind → '8'
+```
+
+---
+
+# 🟢 2. Why dot (`.`) used?
+
+👉 because:
+
+```text
+t என்பது object (reference)
+```
+
+👉 so:
+
+```cpp
+t.kind   ✔️
+```
+
+---
+
+# ⚠️ Important
+
+👉 pointer இருந்தா:
+
+```cpp
+Token* t;
+t->kind   ✔️
+```
+
+👉 reference இருந்தா:
+
+```cpp
+Token& t;
+t.kind    ✔️
+```
+
+---
+
+# 🧠 3. Important Insight
+
+👉 `t`:
+
+```text
+new object இல்லை ❌
+```
+
+👉 அது:
+
+```text
+vector உள்ள original object-ஐ refer பண்ணுது ✔️
+```
+
+---
+
+# 🟢 4. Equivalent form
+
+```cpp
+const Token& t = tok[i];
+```
+
+👉 so:
+
+```cpp
+t.kind == tok[i].kind
+```
+
+✔️ exactly same
+
+---
+
+# 💬 Simple Tamil
+
+👉 `t`:
+
+* vector உள்ள ஒரு Token object-ஐ refer பண்ணும்
+
+👉 `t.kind`:
+
+* அந்த object-ன் type (operator or number)
+
+---
+
+# 🎯 Final Answer
+
+```text
+t.kind = t refer பண்ணும் Token object-ன் kind member
+```
+
+---
+
+# 🚀 One-line
+
+```text
+t.kind = current Token object-ன் type
+```
+
+---
+
+If you want 🔥
+
+👉 memory-level reference explanation
+👉 why reference faster than copy
+
+Just tell 👍
