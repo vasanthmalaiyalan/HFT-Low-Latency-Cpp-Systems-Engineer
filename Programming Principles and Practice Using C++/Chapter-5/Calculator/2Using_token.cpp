@@ -63,7 +63,7 @@ void print_token(const std::vector<Token>& tok)
 // ---------------------------------
 void try_multiply(const std::vector<Token>& tok) {
 
-    for (int i = 0; i < tok.size(); ++i) {
+    for (size_t i = 0; i < tok.size(); ++i) {
         if (tok[i].kind == '*') {
             double d = tok[i - 1].value * tok[i + 1].value;
             std::cout << "Found multiply: "
@@ -92,7 +92,7 @@ int main() {
          break;
     }
 
-    print_tokens(tok);
+    print_token(tok);
 
     // try naive evaluation
     try_multiply(tok);
@@ -102,3 +102,14 @@ int main() {
 
     return 0;
 }
+
+/*
+ ./a.out 
+Enter expression (e.g., 1+2*3):
+1+2*3
+Tokens: 1 + 2 * 3 
+Found multiply: 2 3 = 6
+
+ This approach is incomplete!
+We cannot handle order of operation properly.
+*/
