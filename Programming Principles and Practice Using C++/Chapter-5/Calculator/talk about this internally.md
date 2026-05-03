@@ -157,3 +157,198 @@ If you want next 🔥
 👉 vtable + object layout
 
 Just tell 👍
+--------
+
+சூப்பர் — இப்ப நீ கேக்கிற level தான் “compiler actually என்ன பண்ணுது?” 🔥
+Pseudo explanation வேண்டாம், **real low-level view** பார்க்கலாம்.
+
+---
+
+# 🧠 1. நீ எழுதுற code
+
+```cpp
+Token t1 {'+'};
+```
+
+---
+
+# ⚙️ 2. Compiler (GCC/Clang) internally என்ன பண்ணும்?
+
+👉 இது **2 steps** ஆக split ஆகும்:
+
+```text
+1. memory allocate
+2. constructor call
+```
+
+---
+
+# 🟢 Step 1: Memory allocation
+
+Stackல:
+
+```asm
+sub rsp, 16   ; 16 bytes allocate (Token size)
+```
+
+👉 இந்த memory தான் `t1`
+
+---
+
+# 🟢 Step 2: Constructor call
+
+👉 Actual generated code (simplified assembly-like):
+
+```asm
+lea rdi, [rsp]     ; rdi = address of t1  (this pointer)
+mov esi, '+'       ; esi = argument k
+call Token::Token(char)
+```
+
+---
+
+# 🧠 Important Registers (Linux x86_64)
+
+| Register | Meaning        |
+| -------- | -------------- |
+| `rdi`    | this pointer   |
+| `esi`    | first argument |
+
+---
+
+👉 So actual call:
+
+```text
+Token::Token(this = &t1, k = '+')
+```
+
+✔️ இது pseudo இல்ல — actual ABI behavior
+
+---
+
+# 🟢 3. Inside constructor (assembly style)
+
+```asm
+mov BYTE PTR [rdi], '+'     ; kind = '+'
+mov QWORD PTR [rdi+8], 0.0  ; value = 0.0
+```
+
+---
+
+# 🧠 Memory layout
+
+```text
+t1:
+[0]      → kind ('+')
+[1-7]    → padding
+[8-15]   → value (double)
+```
+
+---
+
+# 🔥 4. Why you don’t see this?
+
+👉 Because C++ hides:
+
+```text
+this pointer
+calling convention
+register usage
+```
+
+---
+
+# 🟢 5. Want to SEE real compiler output?
+
+👉 Use this command:
+
+```bash
+g++ -std=c++17 -S token.cpp
+```
+
+👉 இது `.s` (assembly) file generate பண்ணும்
+
+---
+
+# 🧪 Minimal example to test
+
+```cpp
+// token.cpp
+class Token {
+public:
+    char kind;
+    double value;
+
+    Token(char k) : kind{k}, value{0.0} {}
+};
+
+int main() {
+    Token t1 {'+'};
+}
+```
+
+---
+
+👉 compile:
+
+```bash
+g++ -std=c++17 -O0 -S token.cpp
+```
+
+👉 open:
+
+```bash
+cat token.s
+```
+
+---
+
+# 🧠 6. Final Truth
+
+👉 Compiler actually does:
+
+```text
+1. allocate memory
+2. pass address in register (this)
+3. pass arguments in registers
+4. call constructor function
+```
+
+---
+
+# 💬 Simple Tamil Summary
+
+👉 `Token t1 {'+'};`
+
+✔️ memory allocate ஆகும்
+✔️ `this = &t1` registerல pass ஆகும்
+✔️ `'+'` argument pass ஆகும்
+✔️ constructor run ஆகும்
+
+---
+
+# 🎯 Final Answer
+
+👉 “this எப்படி போகுது?”
+
+```text
+this = first hidden argument, registerல compiler pass பண்ணும்
+```
+
+---
+
+# 🚀 One-line
+
+```text
+Constructor call = normal function call with hidden this pointer (in register)
+```
+
+---
+
+If you want next 🔥
+
+👉 calling conventions deep dive (System V ABI)
+👉 stack vs register passing
+👉 OOP எப்படி assemblyல வேலை செய்கிறது
+
+Just tell 👍
