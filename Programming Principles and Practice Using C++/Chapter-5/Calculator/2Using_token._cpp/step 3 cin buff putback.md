@@ -240,3 +240,189 @@ If you want next 🔥
 👉 unget vs putback difference deep
 
 Just tell 👍
+
+------------
+
+`incase pointer வந்து `Buffer after putback:
+Plain text
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+   ↑
+pointer
+👉 மீண்டும் '1' read செய்ய ready ✔️` ['5'] இது கிட்ட இருந்தாலும் putback பயன்படுத்தினால் அது திரும்பவும் முதலிலிருந்து தான் read செய்யுமா?`
+
+இல்ல ❌ — **`putback` பயன்படுத்தினால் “முதல் முதல் இருந்து” read ஆகாது.**
+👉 அது **ஒரே ஒரு character மட்டும்** (last read) மீண்டும் வாசிக்க வாய்ப்பு தரும்.
+
+---
+
+# 🧠 எப்படி நினைக்கணும்?
+
+`putback` =
+
+```text
+pointer--
+```
+
+👉 அதுவே — **ஒரு step மட்டும் பின்னால்**.
+
+---
+
+# 🟢 Example 1 (நீ கேட்டது போல)
+
+Input:
+
+```text
+12.5+3
+```
+
+Buffer:
+
+```text
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+   ↑
+```
+
+---
+
+## Step 1: read `'1'`
+
+```cpp
+char ch;
+std::cin >> ch;
+```
+
+```text
+ch = '1'
+
+Buffer:
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+          ↑
+```
+
+---
+
+## Step 2: `putback('1')`
+
+```cpp
+std::cin.putback(ch);
+```
+
+```text
+Buffer:
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+   ↑
+```
+
+👉 மீண்டும் `'1'` மட்டும் read செய்ய முடியும் ✔️
+👉 **முழு buffer reset ஆகாது ❌**
+
+---
+
+# 🔴 Important Point
+
+👉 நீ கேட்டது:
+
+> `'5'` கிட்ட இருந்தாலும் putback போட்டால் ஆரம்பத்துக்கு போகுமா?
+
+👉 Answer:
+
+```text
+NO ❌
+```
+
+👉 அது:
+
+```text
+ஒரு character மட்டும் பின்னால்
+```
+
+---
+
+# 🟢 Example 2 (clear)
+
+## Suppose pointer at `'5'`
+
+```text
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+                 ↑
+```
+
+---
+
+## After reading `'5'`
+
+```text
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+                      ↑
+```
+
+---
+
+## After `putback('5')`
+
+```text
+[ '1' ][ '2' ][ '.' ][ '5' ][ '+' ][ '3' ]
+                 ↑
+```
+
+👉 `'5'` மட்டும் மீண்டும் read ஆகும்
+👉 `'1'` வரை போகாது ❌
+
+---
+
+# 🧠 Summary Rule
+
+```text
+putback = only undo last read character
+```
+
+---
+
+# 🟢 If you want to go back more?
+
+👉 options:
+
+### ✔ Multiple putback
+
+```cpp
+std::cin.putback('5');
+std::cin.putback('.');
+```
+
+---
+
+### ✔ or use string parsing (better)
+
+---
+
+# 💬 Simple Tamil
+
+👉 `putback`:
+
+* முழு input reset செய்யாது ❌
+* ஒரு character மட்டும் rewind ✔️
+
+---
+
+# 🎯 Final Answer
+
+```text
+putback() = ஒரு step மட்டும் பின்னால் போகும், ஆரம்பத்துக்கு போகாது
+```
+
+---
+
+# 🚀 One-line
+
+```text
+putback ≠ restart, putback = one-step rewind
+```
+
+---
+
+If you want next 🔥
+
+👉 full tokenizer எப்படி design பண்ணணும் (without putback pitfalls)
+👉 stream buffer deep internals
+
+Just tell 👍
