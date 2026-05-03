@@ -49,7 +49,7 @@ Token get_token() {
 void print_token(const std::vector<Token>& tok)
 {
     std::cout << "Tokens: ";
-    for (const Token& t : tok) {
+    for (const Token& t : tok) { // why kind is working because inside Token class layout
         if (t.kind == '8')
            std::cout << t.value << " ";
         else 
