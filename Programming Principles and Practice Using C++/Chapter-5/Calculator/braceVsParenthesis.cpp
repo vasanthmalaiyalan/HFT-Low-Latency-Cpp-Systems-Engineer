@@ -50,3 +50,21 @@ t3.c = A
 Constructor called with char: ,
 t5.c = ,
 */
+
+//===================x====================x===============
+
+/*
+🧠 What happens?
+
+👉 ():
+
+conversion allow பண்ணும்
+தவறான value போகலாம்
+
+👉 {}:
+
+strict
+unsafe conversion block பண்ணும்
+🚀 Final One-line
+Use {} → prevents hidden bugs automatically
+*/
