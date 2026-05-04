@@ -31,7 +31,7 @@ double expression() {
             left += term();
         }
         else if (t.kind == '-') {
-            left -= term();
+            left -= term();   // both return is called expression()
         }
         else if (t.kind == ';') { // end
             return left;
