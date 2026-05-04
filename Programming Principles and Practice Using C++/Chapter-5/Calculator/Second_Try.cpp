@@ -19,21 +19,26 @@ double term() {
 }
 
 // Second try
+// Fixed expression
 double expression() {
 
-    double left = term(); // start from term
+    double left = term();
 
-    Token t = get_token(); // read operator
+    while(true) {
+        Token t = get_token();
 
-    switch (t.kind) {
-        case '+':
-           return left + expression(); // recursive
-
-        case '-':
-           return left - expression(); // recursive
-           
-        default:
-           return left;   
+        if (t.kind == '+') {
+            left += term();
+        }
+        else if (t.kind == '-') {
+            left -= term();
+        }
+        else if (t.kind == ';') { // end
+            return left;
+        }
+        else {
+            return left;
+        }
     }
 }
 
