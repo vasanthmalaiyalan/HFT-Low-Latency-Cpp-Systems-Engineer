@@ -40,7 +40,7 @@ double term() {
 
     Token t = get_token();
 
-    while (true) {
+    while (true) {           // while loop run
         if (t.kind == '*') {
             left *= primary();
             t = get_token();
