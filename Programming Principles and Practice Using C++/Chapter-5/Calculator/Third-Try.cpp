@@ -42,7 +42,51 @@ double term() {
 
     while (true) {
         if (t.kind == '*') {
-
+            left *= primary();
+            t = get_token();
+        }
+        else if (t.kind == '/') {
+            left /= primary();
+            t = get_token();
+        }
+        else {
+            std::cin.putback(t.kind);
+            return left;
         }
     }
+}
+
+// ----------------- Expression ---------------------
+double expression() {
+
+    double left = term(); // start with term
+    Token t = get_token(); // read next token
+
+    while (true) {
+        switch (t.kind) {
+            case '+':
+               left += term();  // add next term
+               t = get_token();
+               break;
+
+            case '-':
+               left -= term();  // subtract next term  
+               t = get_token();
+               break;
+               
+            default:
+               std::cin.putback(t.kind);
+               return left;  // no more   
+        }
+    }
+}
+
+//------------------ Main -------------------------
+int main() {
+
+    std::cout << "Enter expression: ";
+
+    double result = expression();
+
+    std::cout << "Result = " << result << "\n";
 }
