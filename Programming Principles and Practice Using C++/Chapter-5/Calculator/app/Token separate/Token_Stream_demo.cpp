@@ -145,3 +145,61 @@ int main() {
         std::cerr << "Error: " << e.what() << '\n';
     }
 }
+
+/*
+▶️ Compile
+g++ -std=c++17 -Wall -Wextra -Werror -pedantic token_stream_demo.cpp -o demo
+▶️ Run
+./demo
+🧪 Example
+
+Input:
+
+12+3.5*q
+
+Output:
+
+NUMBER: 12
+TOKEN : +
+NUMBER: 3.5
+TOKEN : *
+🧠 6. Why putback() needed?
+
+👉 Example:
+
+Input:
+
+1+2
+
+👉 expression() reads:
+
+1
++
+
+👉 next function may need:
+
++
+
+👉 so:
+
+ts.putback(t);
+💬 Simple Tamil Summary
+
+👉 Token_stream:
+
+✔ characters → tokens
+✔ token buffering
+✔ putback support
+
+👉 public:
+
+user interface
+
+👉 private:
+
+hidden implementation
+🎯 Final Takeaway
+Token_stream = smart token input system
+🚀 One-line
+Parser reads tokens through Token_stream, not directly from cin
+*/
