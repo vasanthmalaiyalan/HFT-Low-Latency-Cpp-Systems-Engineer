@@ -33,5 +33,19 @@ class Token {
 // ==============================================
 
 void error (const std::string& msg) {
+
     throw std::runtime_error(msg);
+}
+
+// =================================================
+// Token_stream
+// ==================================================
+
+class Token_stream {
+    public:
+      Token_stream()
+           : full{false}, buffer{'0'}
+      {
+        
+      }     
 }
