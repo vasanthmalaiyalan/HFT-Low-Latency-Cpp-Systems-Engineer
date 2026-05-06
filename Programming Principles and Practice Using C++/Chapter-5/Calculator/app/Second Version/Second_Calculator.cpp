@@ -253,3 +253,43 @@ catch (...) {
     std::cerr << "Unknow exception\n";
     return 2;
 }
+
+/*
+▶️ Compile
+g++ -std=c++17 -Wall -Wextra -Werror -pedantic calculator_v3.cpp -o calc
+▶️ Run
+./calc
+🧪 Example
+
+Input:
+
+2+3;
+3+4*5;
+q
+
+Output:
+
+= 5
+= 23
+🧠 Important Lesson
+
+👉 Programs need:
+
+Clear communication protocol
+💥 BIG INSIGHT
+Parser correctness alone போதாது ❌
+Interactive behaviorவும் important ✔
+💬 Simple Tamil Summary
+
+👉 Bug:
+
+parser correct ✔
+output delayed ❌
+
+👉 Solution:
+
+';' → print
+'q' → quit
+🎯 Final Takeaway
+Good software = correct logic + good interaction
+*/
