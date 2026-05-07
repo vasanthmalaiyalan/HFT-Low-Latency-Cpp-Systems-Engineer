@@ -160,3 +160,25 @@ catch (std::exception& e) {
     std::cerr << "Error: "
               << e.what() << '\n';
 }
+
+/*
+🧪 Example
+
+Input:
+
+12.5+4*q
+🖥 Output
+[READ CHAR] -> 1
+[NUMBER READ] -> 12.5
+NUMBER TOKEN : 12.5
+
+[READ CHAR] -> +
+SYMBOL TOKEN : +
+
+[READ CHAR] -> 4
+[NUMBER READ] -> 4
+NUMBER TOKEN : 4
+
+[READ CHAR] -> *
+SYMBOL TOKEN : *
+*/
