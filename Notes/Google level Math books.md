@@ -233,3 +233,194 @@ DSA mastery mostly வருகிறது:
 இதிலிருந்து.
 
 Math support role மட்டும் play பண்ணும்.
+
+----------
+
+கண்டிப்பாக — இந்த DSA/algorithm-thinking books-க்கு proper title + authors + best editions கீழே:
+
+---
+
+# Phase 1 — Discrete Math Foundation
+
+## 📘 Discrete Mathematics and Its Applications
+
+### Author
+
+* Kenneth H. Rosen
+
+### Best Edition
+
+* **8th Edition**
+
+### Best for:
+
+* logic
+* sets
+* relations
+* graph theory
+* combinatorics
+* recursion
+* proofs basics
+
+👉 DSA thinking foundationக்கு legendary.
+
+---
+
+# Phase 2 — Advanced Algorithm Math
+
+## 📘 Concrete Mathematics
+
+### Authors
+
+* Donald Knuth
+* Ronald Graham
+* Oren Patashnik
+
+### Best Edition
+
+* **2nd Edition**
+
+### Best for:
+
+* recurrence relations
+* asymptotic analysis
+* combinatorics
+* discrete structures
+* algorithmic mathematics
+
+⚠️ Advanced-level book.
+
+---
+
+# Phase 3 — Problem Solving Thinking
+
+## 📘 How to Solve It
+
+### Author
+
+* George Pólya
+
+### Best Edition
+
+* **Princeton Science Library Edition** (commonly recommended)
+
+### Famous for:
+
+* thinking process
+* abstraction
+* breaking complex problems
+* pattern recognition
+
+👉 Elite problem-solving mindset build ஆகும்.
+
+---
+
+# Phase 4 — Competitive Programming Math
+
+## 📘 Competitive Programming
+
+### Authors
+
+* Steven Halim
+* Felix Halim
+
+### Best Edition
+
+* **Competitive Programming 4**
+  (CP4 — latest modern version)
+
+### Covers:
+
+* number theory
+* combinatorics
+* graph theory
+* DP intuition
+* bit manipulation
+* contest algorithms
+
+👉 Coding interview + CP bridge book.
+
+---
+
+# Phase 5 — Algorithms Deep CS
+
+## 📘 Introduction to Algorithms
+
+### Authors
+
+* Thomas H. Cormen
+* Charles E. Leiserson
+* Ronald Rivest
+* Clifford Stein
+
+### Common Name
+
+* **CLRS**
+
+### Best Edition
+
+* **4th Edition**
+
+### Best for:
+
+* asymptotic analysis
+* trees
+* graphs
+* greedy
+* DP
+* advanced algorithms
+
+⚠️ Theory-heavy.
+Interview-cramming book அல்ல.
+Deep CS understanding book.
+
+---
+
+# BEST Easier Learning Order
+
+நேராக CLRS + Rosen ஆரம்பித்தால் overwhelming ஆகலாம்.
+
+அதனால் practical sequence:
+
+```text id="1lnzcs"
+1. How to Solve It
+2. Basic DSA
+3. Discrete Mathematics and Its Applications
+4. Competitive Programming 4
+5. Introduction to Algorithms (CLRS)
+6. Concrete Mathematics
+```
+
+---
+
+# Most Important Reality
+
+Google-level DSA mastery mostly வருகிறது:
+
+```text id="4d3nqt"
+Books
++
+Hundreds of coding problems
++
+Debugging
++
+Pattern recognition
++
+Optimization thinking
+```
+
+இதிலிருந்து.
+
+Books மட்டும் படித்தால்:
+
+* understanding வரும்
+* intuition ஆரம்பிக்கும்
+
+ஆனால் mastery வருவது:
+
+* implementation
+* mistakes
+* repeated problem solving
+
+இதில்தான்.
+
