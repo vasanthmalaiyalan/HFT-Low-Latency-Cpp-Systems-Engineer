@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdexccept>
+#include <stdexcept>
 
 // =================================================
 // Token
@@ -28,7 +28,7 @@ void error(const std::string& msg) {
 // Token_stream
 // ==============================================
 
-class Token_stream() {
+class Token_stream {
 
     public:
       Token get();
@@ -97,7 +97,7 @@ class Token_stream() {
     Token t = ts.get();
     
     std::cout 
-         << '\nFinal Token:\n';
+         << "\nFinal Token:\n";
 
      std::cout 
           << "kind = "
@@ -113,3 +113,17 @@ class Token_stream() {
          << "Error: "
          << e.what() << '\n';
  }
+
+ /*
+ ./a.out 
+Enter Token:
+123
+
+[First Char Read] -> 1
+[putback into cin] -> 1
+[Full number parsed by cin] -> 123
+
+Final Token:
+kind = 8
+Value = 123
+ */
