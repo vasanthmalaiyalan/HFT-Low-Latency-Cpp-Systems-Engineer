@@ -32,7 +32,7 @@ class Token_stream {
        Token_stream() : full{false}, buffer{'0'} {}
 
        Token get();
-       void putbak(Token t);
+       void putback(Token t);
 
    private:
       bool full;
@@ -155,4 +155,8 @@ try {
                       << t.kind << '\n';
         }
     }
+}
+catch (std::exception& e) {
+    std::cerr << "Error: "
+              << e.what() << '\n';
 }
